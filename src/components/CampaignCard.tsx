@@ -157,14 +157,18 @@ export const CampaignCard: React.FC<CampaignCardProps> = ({
         </div>
         
         <div className="space-y-2 text-sm text-muted-foreground">
-          <div className="flex items-center gap-2">
-            <Calendar className="h-4 w-4" />
-            <span>{campaign.startDate} até {campaign.endDate}</span>
-          </div>
-          <div className="flex items-center gap-2">
-            <Clock className="h-4 w-4" />
-            <span>{campaign.duration}</span>
-          </div>
+          {(campaign.startDate && campaign.endDate) && (
+            <div className="flex items-center gap-2">
+              <Calendar className="h-4 w-4" />
+              <span>Válida até {new Date(campaign.endDate).toLocaleDateString('pt-BR')}</span>
+            </div>
+          )}
+          {campaign.duration && (
+            <div className="flex items-center gap-2">
+              <Clock className="h-4 w-4" />
+              <span>{campaign.duration}</span>
+            </div>
+          )}
         </div>
       </div>
     </Card>

@@ -51,14 +51,14 @@ export const CampaignProvider: React.FC<CampaignProviderProps> = ({ children }) 
         priceOriginal: campaign.price_original || 0,
         pricePromotional: campaign.price_promotional || 0,
         priceLabel: 'A partir de',
-        image: campaign.image_url || '/placeholder.svg', // Usando campo image_url do Supabase
+        image: campaign.image_url || '/placeholder.svg',
         startDate: campaign.start_date || '',
         endDate: campaign.end_date || '',
-        duration: '2 diárias', // Valor padrão, pode ser calculado
+        duration: '', // Será calculado se necessário
         status: campaign.is_active ? 'active' : 'inactive',
-        category: campaign.category || '', // Usando campo category do Supabase
-        location: 'São Paulo, SP', // Valor padrão, será necessário adicionar campo
-        maxGuests: 4, // Valor padrão, será necessário adicionar campo
+        category: campaign.category || '',
+        location: '', // Remover valor padrão
+        maxGuests: 0, // Remover valor padrão
       }));
 
       setCampaigns(mappedCampaigns);

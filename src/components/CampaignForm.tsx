@@ -146,8 +146,8 @@ export const CampaignForm: React.FC<CampaignFormProps> = ({
       duration: formData.duration,
       status: formData.status,
       category: formData.category,
-      location: 'São Paulo, SP', // Default location
-      maxGuests: 4 // Default max guests
+      location: '', // Não usar valor padrão
+      maxGuests: 0 // Não usar valor padrão
     };
 
     try {
