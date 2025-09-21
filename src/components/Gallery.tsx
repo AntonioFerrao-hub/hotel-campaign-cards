@@ -4,33 +4,21 @@ import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Badge } from '@/components/ui/badge';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
-import { 
-  Search, 
-  Filter,
-  Hotel,
-  MapPin,
-  Calendar,
-  Users,
-  Star
-} from 'lucide-react';
+import { Search, Filter, Hotel, MapPin, Calendar, Users, Star } from 'lucide-react';
 import { Link } from 'react-router-dom';
-
 export const Gallery: React.FC = () => {
-  const { campaigns } = useCampaigns();
+  const {
+    campaigns
+  } = useCampaigns();
   const [searchTerm, setSearchTerm] = useState('');
   const [selectedCategory, setSelectedCategory] = useState<string>('');
-
   const categories = Array.from(new Set(campaigns.map(c => c.category)));
-
   const filteredCampaigns = campaigns.filter(campaign => {
-    const matchesSearch = campaign.title.toLowerCase().includes(searchTerm.toLowerCase()) ||
-                         campaign.description.toLowerCase().includes(searchTerm.toLowerCase());
+    const matchesSearch = campaign.title.toLowerCase().includes(searchTerm.toLowerCase()) || campaign.description.toLowerCase().includes(searchTerm.toLowerCase());
     const matchesCategory = selectedCategory === '' || campaign.category === selectedCategory;
     return matchesSearch && matchesCategory;
   });
-
-  return (
-    <div className="min-h-screen bg-background">
+  return <div className="min-h-screen bg-background">
       {/* Header */}
       <header className="border-b border-border bg-card shadow-sm">
         <div className="container mx-auto px-4 py-6">
@@ -70,32 +58,16 @@ export const Gallery: React.FC = () => {
         <div className="flex flex-col sm:flex-row gap-4 mb-8">
           <div className="relative flex-1">
             <Search className="absolute left-3 top-3 h-4 w-4 text-muted-foreground" />
-            <Input
-              placeholder="Buscar hotéis e campanhas..."
-              value={searchTerm}
-              onChange={(e) => setSearchTerm(e.target.value)}
-              className="pl-10"
-            />
+            
           </div>
           <div className="flex flex-wrap gap-2 items-center">
             <Filter className="h-4 w-4 text-muted-foreground" />
-            <Badge
-              variant={selectedCategory === '' ? 'default' : 'outline'}
-              className="cursor-pointer"
-              onClick={() => setSelectedCategory('')}
-            >
+            <Badge variant={selectedCategory === '' ? 'default' : 'outline'} className="cursor-pointer" onClick={() => setSelectedCategory('')}>
               Todas
             </Badge>
-            {categories.map(category => (
-              <Badge
-                key={category}
-                variant={selectedCategory === category ? 'default' : 'outline'}
-                className="cursor-pointer"
-                onClick={() => setSelectedCategory(category)}
-              >
+            {categories.map(category => <Badge key={category} variant={selectedCategory === category ? 'default' : 'outline'} className="cursor-pointer" onClick={() => setSelectedCategory(category)}>
                 {category}
-              </Badge>
-            ))}
+              </Badge>)}
           </div>
         </div>
 
@@ -107,16 +79,10 @@ export const Gallery: React.FC = () => {
         </div>
 
         {/* Campaigns Grid */}
-        {filteredCampaigns.length > 0 ? (
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
-            {filteredCampaigns.map(campaign => (
-              <Card key={campaign.id} className="overflow-hidden hover:shadow-elegant transition-all duration-300 hover:scale-105">
+        {filteredCampaigns.length > 0 ? <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
+            {filteredCampaigns.map(campaign => <Card key={campaign.id} className="overflow-hidden hover:shadow-elegant transition-all duration-300 hover:scale-105">
                 <div className="aspect-video relative overflow-hidden">
-                  <img 
-                    src={campaign.image} 
-                    alt={campaign.title}
-                    className="w-full h-full object-cover"
-                  />
+                  <img src={campaign.image} alt={campaign.title} className="w-full h-full object-cover" />
                   <div className="absolute top-4 right-4">
                     <Badge className="bg-ocean-primary text-primary-foreground">
                       {campaign.category}
@@ -155,15 +121,8 @@ export const Gallery: React.FC = () => {
                         <span>Máx. {campaign.maxGuests} hóspedes</span>
                       </div>
                       <div className="text-right">
-                        <div className="flex items-center gap-2">
-                          <div className="text-lg font-bold text-ocean-primary">
-                            R$ {campaign.pricePromotional}
-                          </div>
-                          {campaign.priceOriginal > campaign.pricePromotional && (
-                            <div className="text-sm text-muted-foreground line-through">
-                              R$ {campaign.priceOriginal}
-                            </div>
-                          )}
+                        <div className="text-lg font-bold text-ocean-primary">
+                          R$ {campaign.price}
                         </div>
                         <div className="text-xs text-muted-foreground">por noite</div>
                       </div>
@@ -173,11 +132,8 @@ export const Gallery: React.FC = () => {
                     </Button>
                   </div>
                 </CardContent>
-              </Card>
-            ))}
-          </div>
-        ) : (
-          <div className="text-center py-12">
+              </Card>)}
+          </div> : <div className="text-center py-12">
             <div className="h-24 w-24 mx-auto mb-4 rounded-full bg-muted flex items-center justify-center">
               <Hotel className="h-8 w-8 text-muted-foreground" />
             </div>
@@ -187,9 +143,7 @@ export const Gallery: React.FC = () => {
             <p className="text-muted-foreground">
               Tente ajustar os filtros de busca
             </p>
-          </div>
-        )}
+          </div>}
       </section>
-    </div>
-  );
+    </div>;
 };
