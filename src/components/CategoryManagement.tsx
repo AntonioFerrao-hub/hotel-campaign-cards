@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
@@ -8,6 +8,7 @@ import { AlertDialog, AlertDialogAction, AlertDialogCancel, AlertDialogContent, 
 import { Badge } from '@/components/ui/badge';
 import { Plus, Edit, Trash2 } from 'lucide-react';
 import { useToast } from '@/hooks/use-toast';
+import { supabase } from '@/integrations/supabase/client';
 
 interface Category {
   id: string;
@@ -17,19 +18,45 @@ interface Category {
 
 export const CategoryManagement: React.FC = () => {
   const { toast } = useToast();
-  const [categories, setCategories] = useState<Category[]>([
-    { id: '1', name: 'Temporada', description: 'Campanhas sazonais' },
-    { id: '2', name: 'Promocional', description: 'Ofertas especiais' },
-    { id: '3', name: 'Gastronômico', description: 'Experiências gastronômicas' },
-    { id: '4', name: 'Familiar', description: 'Pacotes para famílias' },
-    { id: '5', name: 'Romântico', description: 'Experiências românticas' }
-  ]);
+  const [categories, setCategories] = useState<Category[]>([]);
+  const [loading, setLoading] = useState(true);
   
   const [editingCategory, setEditingCategory] = useState<Category | null>(null);
   const [isDialogOpen, setIsDialogOpen] = useState(false);
   const [formData, setFormData] = useState({ name: '', description: '' });
 
-  const handleCreateCategory = () => {
+  // Fetch categories from Supabase
+  const fetchCategories = async () => {
+    try {
+      setLoading(true);
+      const { data, error } = await supabase
+        .from('categories')
+        .select('*')
+        .order('name');
+
+      if (error) {
+        console.error('Erro ao buscar categorias:', error);
+        toast({
+          title: "Erro",
+          description: "Erro ao carregar categorias.",
+          variant: "destructive"
+        });
+        return;
+      }
+
+      setCategories(data || []);
+    } catch (error) {
+      console.error('Erro inesperado:', error);
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  useEffect(() => {
+    fetchCategories();
+  }, []);
+
+  const handleCreateCategory = async () => {
     if (!formData.name.trim()) {
       toast({
         title: "Erro",
@@ -39,50 +66,96 @@ export const CategoryManagement: React.FC = () => {
       return;
     }
 
-    const newCategory: Category = {
-      id: Date.now().toString(),
-      name: formData.name.trim(),
-      description: formData.description.trim()
-    };
+    try {
+      const { error } = await supabase
+        .from('categories')
+        .insert({
+          name: formData.name.trim(),
+          description: formData.description.trim() || null
+        });
 
-    setCategories(prev => [...prev, newCategory]);
-    setFormData({ name: '', description: '' });
-    setIsDialogOpen(false);
-    
-    toast({
-      title: "Sucesso",
-      description: "Categoria criada com sucesso!"
-    });
+      if (error) {
+        throw error;
+      }
+
+      await fetchCategories();
+      setFormData({ name: '', description: '' });
+      setIsDialogOpen(false);
+      
+      toast({
+        title: "Sucesso",
+        description: "Categoria criada com sucesso!"
+      });
+    } catch (error) {
+      console.error('Erro ao criar categoria:', error);
+      toast({
+        title: "Erro",
+        description: "Erro ao criar categoria.",
+        variant: "destructive"
+      });
+    }
   };
 
-  const handleUpdateCategory = () => {
+  const handleUpdateCategory = async () => {
     if (!formData.name.trim() || !editingCategory) return;
 
-    setCategories(prev => 
-      prev.map(cat => 
-        cat.id === editingCategory.id 
-          ? { ...cat, name: formData.name.trim(), description: formData.description.trim() }
-          : cat
-      )
-    );
+    try {
+      const { error } = await supabase
+        .from('categories')
+        .update({
+          name: formData.name.trim(),
+          description: formData.description.trim() || null
+        })
+        .eq('id', editingCategory.id);
 
-    setEditingCategory(null);
-    setFormData({ name: '', description: '' });
-    setIsDialogOpen(false);
-    
-    toast({
-      title: "Sucesso",
-      description: "Categoria atualizada com sucesso!"
-    });
+      if (error) {
+        throw error;
+      }
+
+      await fetchCategories();
+      setEditingCategory(null);
+      setFormData({ name: '', description: '' });
+      setIsDialogOpen(false);
+      
+      toast({
+        title: "Sucesso",
+        description: "Categoria atualizada com sucesso!"
+      });
+    } catch (error) {
+      console.error('Erro ao atualizar categoria:', error);
+      toast({
+        title: "Erro",
+        description: "Erro ao atualizar categoria.",
+        variant: "destructive"
+      });
+    }
   };
 
-  const handleDeleteCategory = (categoryId: string) => {
-    setCategories(prev => prev.filter(cat => cat.id !== categoryId));
-    
-    toast({
-      title: "Sucesso",
-      description: "Categoria removida com sucesso!"
-    });
+  const handleDeleteCategory = async (categoryId: string) => {
+    try {
+      const { error } = await supabase
+        .from('categories')
+        .delete()
+        .eq('id', categoryId);
+
+      if (error) {
+        throw error;
+      }
+
+      await fetchCategories();
+      
+      toast({
+        title: "Sucesso",
+        description: "Categoria removida com sucesso!"
+      });
+    } catch (error) {
+      console.error('Erro ao deletar categoria:', error);
+      toast({
+        title: "Erro",
+        description: "Erro ao remover categoria.",
+        variant: "destructive"
+      });
+    }
   };
 
   const openEditDialog = (category: Category) => {
@@ -157,8 +230,16 @@ export const CategoryManagement: React.FC = () => {
         </Dialog>
       </div>
 
-      <div className="grid gap-4">
-        {categories.map((category) => (
+      {loading ? (
+        <div className="text-center py-8">
+          <p className="text-muted-foreground">Carregando categorias...</p>
+        </div>
+      ) : categories.length === 0 ? (
+        <div className="text-center py-8">
+          <p className="text-muted-foreground">Nenhuma categoria encontrada.</p>
+        </div>
+      ) : (
+        categories.map((category) => (
           <Card key={category.id}>
             <CardContent className="p-4">
               <div className="flex items-center justify-between">
@@ -209,8 +290,8 @@ export const CategoryManagement: React.FC = () => {
               </div>
             </CardContent>
           </Card>
-        ))}
-      </div>
+        ))
+      )}
     </div>
   );
 };
