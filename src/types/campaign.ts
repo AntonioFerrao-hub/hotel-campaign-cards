@@ -10,6 +10,8 @@ export interface Campaign {
   duration: string;
   status: 'active' | 'inactive';
   category: string;
+  location: string;
+  maxGuests: number;
 }
 
 export interface User {

@@ -77,7 +77,9 @@ export const CampaignForm: React.FC<CampaignFormProps> = ({ campaign, onClose })
       endDate: formData.endDate,
       duration: formData.duration,
       status: formData.status,
-      category: formData.category
+      category: formData.category,
+      location: 'São Paulo, SP', // Default location
+      maxGuests: 4 // Default max guests
     };
 
     try {

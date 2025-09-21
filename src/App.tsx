@@ -3,31 +3,14 @@ import { Toaster as Sonner } from "@/components/ui/sonner";
 import { TooltipProvider } from "@/components/ui/tooltip";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { BrowserRouter, Routes, Route } from "react-router-dom";
-import { AuthProvider, useAuth } from "@/contexts/AuthContext";
+import { AuthProvider } from "@/contexts/AuthContext";
 import { CampaignProvider } from "@/contexts/CampaignContext";
-import { LoginForm } from "@/components/LoginForm";
+import { Gallery } from "@/components/Gallery";
 import { Dashboard } from "@/components/Dashboard";
+import { AdminLayout } from "@/components/AdminLayout";
 import NotFound from "./pages/NotFound";
 
 const queryClient = new QueryClient();
-
-const AppContent = () => {
-  const { isAuthenticated } = useAuth();
-
-  if (!isAuthenticated) {
-    return <LoginForm />;
-  }
-
-  return (
-    <BrowserRouter>
-      <Routes>
-        <Route path="/" element={<Dashboard />} />
-        {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}
-        <Route path="*" element={<NotFound />} />
-      </Routes>
-    </BrowserRouter>
-  );
-};
 
 const App = () => (
   <QueryClientProvider client={queryClient}>
@@ -36,7 +19,21 @@ const App = () => (
       <Sonner />
       <AuthProvider>
         <CampaignProvider>
-          <AppContent />
+          <BrowserRouter>
+            <Routes>
+              <Route path="/" element={<Gallery />} />
+              <Route 
+                path="/admin" 
+                element={
+                  <AdminLayout>
+                    <Dashboard />
+                  </AdminLayout>
+                } 
+              />
+              {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}
+              <Route path="*" element={<NotFound />} />
+            </Routes>
+          </BrowserRouter>
         </CampaignProvider>
       </AuthProvider>
     </TooltipProvider>
