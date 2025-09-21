@@ -58,7 +58,12 @@ export const Gallery: React.FC = () => {
         <div className="flex flex-col sm:flex-row gap-4 mb-8">
           <div className="relative flex-1">
             <Search className="absolute left-3 top-3 h-4 w-4 text-muted-foreground" />
-            
+            <Input 
+              placeholder="Buscar campanhas..." 
+              value={searchTerm}
+              onChange={(e) => setSearchTerm(e.target.value)}
+              className="pl-10"
+            />
           </div>
           <div className="flex flex-wrap gap-2 items-center">
             <Filter className="h-4 w-4 text-muted-foreground" />
