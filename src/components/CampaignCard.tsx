@@ -133,7 +133,7 @@ export const CampaignCard: React.FC<CampaignCardProps> = ({
             {campaign.title}
           </h3>
           <Badge variant="outline" className="text-xs">
-            {campaign.category}
+            {campaign.category || 'Sem categoria'}
           </Badge>
         </div>
         

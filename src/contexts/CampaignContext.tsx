@@ -56,7 +56,7 @@ export const CampaignProvider: React.FC<CampaignProviderProps> = ({ children }) 
         endDate: campaign.end_date || '',
         duration: '2 diárias', // Valor padrão, pode ser calculado
         status: campaign.is_active ? 'active' : 'inactive',
-        category: campaign.category || 'Sem categoria', // Usando campo category do Supabase
+        category: campaign.category || '', // Usando campo category do Supabase
         location: 'São Paulo, SP', // Valor padrão, será necessário adicionar campo
         maxGuests: 4, // Valor padrão, será necessário adicionar campo
       }));
