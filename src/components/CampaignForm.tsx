@@ -12,6 +12,12 @@ import { ArrowLeft, Save, Upload, X } from 'lucide-react';
 import { useToast } from '@/hooks/use-toast';
 import { supabase } from '@/integrations/supabase/client';
 
+interface Category {
+  id: string;
+  name: string;
+  description?: string;
+}
+
 // Import campaign images
 import resortSunset from '@/assets/resort-sunset.jpg';
 import beachResort from '@/assets/beach-resort.jpg';
@@ -47,6 +53,7 @@ export const CampaignForm: React.FC<CampaignFormProps> = ({
   } = useToast();
   const [isLoading, setIsLoading] = useState(false);
   const [isUploading, setIsUploading] = useState(false);
+  const [categories, setCategories] = useState<Category[]>([]);
   const [formData, setFormData] = useState({
     title: '',
     description: '',
@@ -60,6 +67,29 @@ export const CampaignForm: React.FC<CampaignFormProps> = ({
     status: 'active' as 'active' | 'inactive',
     category: ''
   });
+  // Fetch categories from database
+  const fetchCategories = async () => {
+    try {
+      const { data, error } = await supabase
+        .from('categories')
+        .select('*')
+        .order('name');
+
+      if (error) {
+        console.error('Error fetching categories:', error);
+        return;
+      }
+
+      setCategories(data || []);
+    } catch (error) {
+      console.error('Unexpected error:', error);
+    }
+  };
+
+  useEffect(() => {
+    fetchCategories();
+  }, []);
+
   useEffect(() => {
     if (campaign) {
       setFormData({
@@ -238,11 +268,11 @@ export const CampaignForm: React.FC<CampaignFormProps> = ({
                       <SelectValue placeholder="Selecione uma categoria" />
                     </SelectTrigger>
                     <SelectContent>
-                      <SelectItem value="Temporada">Temporada</SelectItem>
-                      <SelectItem value="Promocional">Promocional</SelectItem>
-                      <SelectItem value="Gastronômico">Gastronômico</SelectItem>
-                      <SelectItem value="Familiar">Familiar</SelectItem>
-                      <SelectItem value="Romântico">Romântico</SelectItem>
+                      {categories.map((category) => (
+                        <SelectItem key={category.id} value={category.name}>
+                          {category.name}
+                        </SelectItem>
+                      ))}
                     </SelectContent>
                   </Select>
                 </div>
