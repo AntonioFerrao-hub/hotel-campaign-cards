@@ -111,7 +111,7 @@ export const Gallery: React.FC = () => {
                       </div>
                       <div className="text-right">
                         <div className="text-lg font-bold text-ocean-primary">
-                          R$ {campaign.price}
+                          R$ {campaign.pricePromotional}
                         </div>
                         <div className="text-xs text-muted-foreground">por noite</div>
                       </div>
