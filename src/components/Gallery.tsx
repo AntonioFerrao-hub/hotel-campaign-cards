@@ -25,10 +25,7 @@ export const Gallery: React.FC = () => {
       {/* Search and Filters */}
       <section className="container mx-auto px-4 py-8">
         <div className="flex flex-col sm:flex-row gap-4 mb-8">
-          <div className="relative flex-1">
-            <Search className="absolute left-3 top-3 h-4 w-4 text-gray-400" />
-            
-          </div>
+          
           <div className="flex flex-wrap gap-2 items-center">
             <Filter className="h-4 w-4 text-gray-400" />
             <Badge variant={selectedCategory === '' ? 'default' : 'outline'} className="cursor-pointer" onClick={() => setSelectedCategory('')}>
