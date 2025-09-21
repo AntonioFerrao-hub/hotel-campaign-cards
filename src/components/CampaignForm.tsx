@@ -264,21 +264,21 @@ export const CampaignForm: React.FC<CampaignFormProps> = ({
                   <Label htmlFor="title">Título da Campanha</Label>
                   <Input id="title" value={formData.title} onChange={e => handleInputChange('title', e.target.value)} placeholder="Ex: Setembro 2025" required />
                 </div>
-                <div className="space-y-2">
-                  <Label htmlFor="category">Categoria</Label>
-                  <Select value={formData.category} onValueChange={value => handleInputChange('category', value)}>
-                    <SelectTrigger>
-                      <SelectValue placeholder="Selecione uma categoria" />
-                    </SelectTrigger>
-                    <SelectContent>
-                      {categories.map((category) => (
-                        <SelectItem key={category.id} value={category.name}>
-                          {category.name}
-                        </SelectItem>
-                      ))}
-                    </SelectContent>
-                  </Select>
-                </div>
+                 <div className="space-y-2">
+                   <Label htmlFor="category">Categoria</Label>
+                   <Select value={formData.category || ""} onValueChange={value => handleInputChange('category', value)}>
+                     <SelectTrigger>
+                       <SelectValue placeholder="Selecione uma categoria" />
+                     </SelectTrigger>
+                     <SelectContent>
+                       {categories.map((category) => (
+                         <SelectItem key={category.id} value={category.name}>
+                           {category.name}
+                         </SelectItem>
+                       ))}
+                     </SelectContent>
+                   </Select>
+                 </div>
               </div>
 
               <div className="space-y-2">
