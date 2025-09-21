@@ -36,13 +36,17 @@ export const CampaignCard: React.FC<CampaignCardProps> = ({
   const navigate = useNavigate();
 
   const handleReserve = () => {
-    // Navigate to booking page or show booking modal
-    toast({
-      title: "Reserve Já",
-      description: `Redirecionando para reserva da campanha "${campaign.title}"`,
-    });
-    // For now, we'll just show a toast. In a real app, this would navigate to a booking page
-    // navigate(`/booking/${campaign.id}`);
+    if (campaign.bookingUrl) {
+      // Redirecionar para o link de reserva da campanha
+      window.open(campaign.bookingUrl, '_blank');
+    } else {
+      // Mostrar toast se não houver link configurado
+      toast({
+        title: "Link não configurado",
+        description: "Esta campanha ainda não possui um link de reserva configurado.",
+        variant: "destructive",
+      });
+    }
   };
 
   const handleDelete = async () => {

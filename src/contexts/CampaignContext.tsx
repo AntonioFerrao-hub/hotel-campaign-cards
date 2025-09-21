@@ -59,6 +59,7 @@ export const CampaignProvider: React.FC<CampaignProviderProps> = ({ children }) 
         category: campaign.category || '',
         location: '',
         maxGuests: 0,
+        bookingUrl: campaign.booking_url || '',
       }));
 
       setCampaigns(mappedCampaigns);
@@ -100,7 +101,8 @@ export const CampaignProvider: React.FC<CampaignProviderProps> = ({ children }) 
           duration_nights: durationNights,
           is_active: campaign.status === 'active',
           image_url: campaign.image,
-          category: campaign.category
+          category: campaign.category,
+          booking_url: campaign.bookingUrl
         });
 
       if (error) {
@@ -128,7 +130,8 @@ export const CampaignProvider: React.FC<CampaignProviderProps> = ({ children }) 
         end_date: updatedCampaign.endDate,
         is_active: updatedCampaign.status === 'active',
         image_url: updatedCampaign.image,
-        category: updatedCampaign.category
+        category: updatedCampaign.category,
+        booking_url: updatedCampaign.bookingUrl
       };
 
       if (updatedCampaign.startDate && updatedCampaign.endDate) {

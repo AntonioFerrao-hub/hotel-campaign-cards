@@ -13,6 +13,7 @@ export interface Campaign {
   category: string;
   location: string;
   maxGuests: number;
+  bookingUrl?: string;
 }
 
 export interface User {

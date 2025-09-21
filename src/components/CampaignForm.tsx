@@ -65,7 +65,8 @@ export const CampaignForm: React.FC<CampaignFormProps> = ({
     endDate: '',
     duration: '',
     status: 'active' as 'active' | 'inactive',
-    category: ''
+    category: '',
+    bookingUrl: ''
   });
   // Fetch categories from database
   const fetchCategories = async () => {
@@ -103,7 +104,8 @@ export const CampaignForm: React.FC<CampaignFormProps> = ({
         endDate: campaign.endDate,
         duration: campaign.duration,
         status: campaign.status,
-        category: campaign.category
+        category: campaign.category,
+        bookingUrl: campaign.bookingUrl || ''
       });
     }
   }, [campaign]);
@@ -147,7 +149,8 @@ export const CampaignForm: React.FC<CampaignFormProps> = ({
       status: formData.status,
       category: formData.category,
       location: '', // Não usar valor padrão
-      maxGuests: 0 // Não usar valor padrão
+      maxGuests: 0, // Não usar valor padrão
+      bookingUrl: formData.bookingUrl
     };
 
     try {
@@ -276,6 +279,17 @@ export const CampaignForm: React.FC<CampaignFormProps> = ({
                     </SelectContent>
                   </Select>
                 </div>
+              </div>
+
+              <div className="space-y-2">
+                <Label htmlFor="bookingUrl">Link de Reserva</Label>
+                <Input 
+                  id="bookingUrl" 
+                  type="url"
+                  value={formData.bookingUrl} 
+                  onChange={e => handleInputChange('bookingUrl', e.target.value)} 
+                  placeholder="https://exemplo.com/reserva" 
+                />
               </div>
 
               <div className="space-y-2">

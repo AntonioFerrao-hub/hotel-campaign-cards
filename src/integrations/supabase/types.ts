@@ -16,6 +16,7 @@ export type Database = {
     Tables: {
       campaigns: {
         Row: {
+          booking_url: string | null
           category: string | null
           created_at: string
           description: string | null
@@ -33,6 +34,7 @@ export type Database = {
           updated_at: string
         }
         Insert: {
+          booking_url?: string | null
           category?: string | null
           created_at?: string
           description?: string | null
@@ -50,6 +52,7 @@ export type Database = {
           updated_at?: string
         }
         Update: {
+          booking_url?: string | null
           category?: string | null
           created_at?: string
           description?: string | null
