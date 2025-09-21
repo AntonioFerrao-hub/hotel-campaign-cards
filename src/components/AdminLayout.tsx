@@ -2,7 +2,7 @@ import React from 'react';
 import { NavLink, useLocation } from 'react-router-dom';
 import { LayoutDashboard, Camera, Users, LogOut, Tag } from 'lucide-react';
 import { useAuth } from '@/contexts/AuthContext';
-import { LoginForm } from './LoginForm';
+import { LoginPage } from './LoginPage';
 import {
   Sidebar,
   SidebarContent,
@@ -114,10 +114,21 @@ function AppSidebar() {
 }
 
 export const AdminLayout: React.FC<AdminLayoutProps> = ({ children }) => {
-  const { isAuthenticated } = useAuth();
+  const { isAuthenticated, loading } = useAuth();
+
+  if (loading) {
+    return (
+      <div className="min-h-screen flex items-center justify-center">
+        <div className="text-center">
+          <div className="h-8 w-8 animate-spin mx-auto mb-4 border-2 border-primary border-t-transparent rounded-full"></div>
+          <p>Carregando...</p>
+        </div>
+      </div>
+    );
+  }
 
   if (!isAuthenticated) {
-    return <LoginForm />;
+    return <LoginPage />;
   }
 
   return (
