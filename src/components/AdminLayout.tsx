@@ -1,6 +1,6 @@
 import React from 'react';
 import { NavLink, useLocation } from 'react-router-dom';
-import { LayoutDashboard, Camera, Users, LogOut } from 'lucide-react';
+import { LayoutDashboard, Camera, Users, LogOut, Tag } from 'lucide-react';
 import { useAuth } from '@/contexts/AuthContext';
 import { LoginForm } from './LoginForm';
 import {
@@ -34,6 +34,11 @@ const adminMenuItems = [
     title: "Campanhas",
     url: "/admin/campaigns",
     icon: Camera
+  },
+  {
+    title: "Categorias",
+    url: "/admin/categories",
+    icon: Tag
   },
   {
     title: "Usuários",

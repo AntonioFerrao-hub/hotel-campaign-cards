@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from 'react';
+import InputMask from 'react-input-mask';
 import { useCampaigns } from '@/contexts/CampaignContext';
 import { Campaign } from '@/types/campaign';
 import { Button } from '@/components/ui/button';
@@ -228,7 +229,20 @@ export const CampaignForm: React.FC<CampaignFormProps> = ({
               <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                 <div className="space-y-2">
                   <Label htmlFor="price">Preço (R$)</Label>
-                  <Input id="price" type="number" step="0.01" value={formData.price} onChange={e => handleInputChange('price', e.target.value)} placeholder="1834.00" required />
+                  <InputMask
+                    mask="999999.99"
+                    value={formData.price}
+                    onChange={(e) => handleInputChange('price', e.target.value.replace(/[^\d.,]/g, '').replace(',', '.'))}
+                  >
+                    {(inputProps: any) => (
+                      <Input 
+                        {...inputProps}
+                        id="price" 
+                        placeholder="1834.00" 
+                        required 
+                      />
+                    )}
+                  </InputMask>
                 </div>
                 <div className="space-y-2">
                   <Label htmlFor="priceLabel">Rótulo do Preço</Label>
@@ -239,11 +253,37 @@ export const CampaignForm: React.FC<CampaignFormProps> = ({
               <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
                 <div className="space-y-2">
                   <Label htmlFor="startDate">Data Início</Label>
-                  <Input id="startDate" value={formData.startDate} onChange={e => handleInputChange('startDate', e.target.value)} placeholder="01/09/2025" required />
+                  <InputMask
+                    mask="99/99/9999"
+                    value={formData.startDate}
+                    onChange={(e) => handleInputChange('startDate', e.target.value)}
+                  >
+                    {(inputProps: any) => (
+                      <Input 
+                        {...inputProps}
+                        id="startDate" 
+                        placeholder="01/09/2025" 
+                        required 
+                      />
+                    )}
+                  </InputMask>
                 </div>
                 <div className="space-y-2">
                   <Label htmlFor="endDate">Data Fim</Label>
-                  <Input id="endDate" value={formData.endDate} onChange={e => handleInputChange('endDate', e.target.value)} placeholder="30/09/2025" required />
+                  <InputMask
+                    mask="99/99/9999"
+                    value={formData.endDate}
+                    onChange={(e) => handleInputChange('endDate', e.target.value)}
+                  >
+                    {(inputProps: any) => (
+                      <Input 
+                        {...inputProps}
+                        id="endDate" 
+                        placeholder="30/09/2025" 
+                        required 
+                      />
+                    )}
+                  </InputMask>
                 </div>
                 <div className="space-y-2">
                   <Label htmlFor="duration">Duração</Label>

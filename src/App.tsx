@@ -9,6 +9,7 @@ import { Gallery } from "@/components/Gallery";
 import { Dashboard } from "@/components/Dashboard";
 import { AdminLayout } from "@/components/AdminLayout";
 import { UserManagement } from "@/components/UserManagement";
+import { CategoryManagement } from "@/components/CategoryManagement";
 import NotFound from "./pages/NotFound";
 
 const queryClient = new QueryClient();
@@ -28,6 +29,7 @@ const App = () => (
                   <Routes>
                     <Route index element={<Dashboard />} />
                     <Route path="campaigns" element={<Dashboard />} />
+                    <Route path="categories" element={<CategoryManagement />} />
                     <Route path="users" element={<UserManagement />} />
                   </Routes>
                 </AdminLayout>
