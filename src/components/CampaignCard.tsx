@@ -177,10 +177,10 @@ export const CampaignCard: React.FC<CampaignCardProps> = ({
           </div>
         </div>
         
-        {/* Botão Ver Detalhes para cards públicos */}
+        {/* Botão Reserve Já para cards públicos */}
         {!showActions && (
           <Button className="w-full bg-teal-600 hover:bg-teal-700 text-white text-sm py-2 rounded-md">
-            Ver Detalhes
+            Reserve Já
           </Button>
         )}
       </div>
