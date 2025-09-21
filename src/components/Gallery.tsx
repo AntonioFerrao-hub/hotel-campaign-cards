@@ -25,19 +25,6 @@ export const Gallery: React.FC = () => {
     <div className="min-h-screen bg-gray-50">
       {/* Header */}
       <header className="border-b border-gray-200 bg-white shadow-sm">
-        <div className="container mx-auto px-4 py-6">
-          <div className="flex items-center justify-between">
-            <div className="flex items-center gap-3">
-              <div className="h-12 w-12 rounded-full bg-teal-600 flex items-center justify-center">
-                <Hotel className="h-6 w-6 text-white" />
-              </div>
-              <div>
-                <h1 className="text-2xl font-bold text-gray-900">Hotéis & Resorts</h1>
-                <p className="text-sm text-gray-600">Descubra experiências únicas</p>
-              </div>
-            </div>
-          </div>
-        </div>
       </header>
 
       {/* Search and Filters */}
