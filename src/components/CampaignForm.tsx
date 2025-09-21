@@ -234,37 +234,27 @@ export const CampaignForm: React.FC<CampaignFormProps> = ({
               <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
                 <div className="space-y-2">
                   <Label htmlFor="priceOriginal">Preço Original (R$)</Label>
-                  <InputMask
-                    mask="999999.99"
+                  <Input 
+                    id="priceOriginal" 
+                    type="number"
+                    step="0.01"
                     value={formData.priceOriginal}
-                    onChange={(e) => handleInputChange('priceOriginal', e.target.value.replace(/[^\d.,]/g, '').replace(',', '.'))}
-                  >
-                    {(inputProps: any) => (
-                      <Input 
-                        {...inputProps}
-                        id="priceOriginal" 
-                        placeholder="1950.00" 
-                        required 
-                      />
-                    )}
-                  </InputMask>
+                    onChange={(e) => handleInputChange('priceOriginal', e.target.value)}
+                    placeholder="1950.00" 
+                    required 
+                  />
                 </div>
                 <div className="space-y-2">
                   <Label htmlFor="pricePromotional">Preço Promocional (R$)</Label>
-                  <InputMask
-                    mask="999999.99"
+                  <Input 
+                    id="pricePromotional" 
+                    type="number"
+                    step="0.01"
                     value={formData.pricePromotional}
-                    onChange={(e) => handleInputChange('pricePromotional', e.target.value.replace(/[^\d.,]/g, '').replace(',', '.'))}
-                  >
-                    {(inputProps: any) => (
-                      <Input 
-                        {...inputProps}
-                        id="pricePromotional" 
-                        placeholder="1650.00" 
-                        required 
-                      />
-                    )}
-                  </InputMask>
+                    onChange={(e) => handleInputChange('pricePromotional', e.target.value)}
+                    placeholder="1650.00" 
+                    required 
+                  />
                 </div>
                 <div className="space-y-2">
                   <Label htmlFor="priceLabel">Rótulo do Preço</Label>
@@ -275,37 +265,23 @@ export const CampaignForm: React.FC<CampaignFormProps> = ({
               <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
                 <div className="space-y-2">
                   <Label htmlFor="startDate">Data Início</Label>
-                  <InputMask
-                    mask="99/99/9999"
+                  <Input 
+                    id="startDate" 
+                    type="date"
                     value={formData.startDate}
                     onChange={(e) => handleInputChange('startDate', e.target.value)}
-                  >
-                    {(inputProps: any) => (
-                      <Input 
-                        {...inputProps}
-                        id="startDate" 
-                        placeholder="01/09/2025" 
-                        required 
-                      />
-                    )}
-                  </InputMask>
+                    required 
+                  />
                 </div>
                 <div className="space-y-2">
                   <Label htmlFor="endDate">Data Fim</Label>
-                  <InputMask
-                    mask="99/99/9999"
+                  <Input 
+                    id="endDate" 
+                    type="date"
                     value={formData.endDate}
                     onChange={(e) => handleInputChange('endDate', e.target.value)}
-                  >
-                    {(inputProps: any) => (
-                      <Input 
-                        {...inputProps}
-                        id="endDate" 
-                        placeholder="30/09/2025" 
-                        required 
-                      />
-                    )}
-                  </InputMask>
+                    required 
+                  />
                 </div>
                 <div className="space-y-2">
                   <Label htmlFor="duration">Duração</Label>
