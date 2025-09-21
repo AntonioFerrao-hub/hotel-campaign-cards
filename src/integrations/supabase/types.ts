@@ -21,6 +21,7 @@ export type Database = {
           end_date: string | null
           hotel_id: string | null
           id: string
+          image_url: string | null
           is_active: boolean | null
           price_original: number | null
           price_promotional: number | null
@@ -34,6 +35,7 @@ export type Database = {
           end_date?: string | null
           hotel_id?: string | null
           id?: string
+          image_url?: string | null
           is_active?: boolean | null
           price_original?: number | null
           price_promotional?: number | null
@@ -47,6 +49,7 @@ export type Database = {
           end_date?: string | null
           hotel_id?: string | null
           id?: string
+          image_url?: string | null
           is_active?: boolean | null
           price_original?: number | null
           price_promotional?: number | null

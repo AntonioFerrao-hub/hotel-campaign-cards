@@ -51,7 +51,7 @@ export const CampaignProvider: React.FC<CampaignProviderProps> = ({ children }) 
         priceOriginal: campaign.price_original || 0,
         pricePromotional: campaign.price_promotional || 0,
         priceLabel: 'A partir de',
-        image: '', // Será necessário adicionar campo de imagem na tabela
+        image: campaign.image_url || '/placeholder.svg', // Usando campo image_url do Supabase
         startDate: campaign.start_date || '',
         endDate: campaign.end_date || '',
         duration: '2 diárias', // Valor padrão, pode ser calculado
