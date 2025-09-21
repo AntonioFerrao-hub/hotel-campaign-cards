@@ -75,6 +75,18 @@ export const CampaignProvider: React.FC<CampaignProviderProps> = ({ children }) 
 
   const addCampaign = async (campaign: Omit<Campaign, 'id'>) => {
     try {
+      // Calcular duration_nights a partir das datas
+      let durationNights = 2; // valor padrão
+      if (campaign.startDate && campaign.endDate) {
+        const startDate = new Date(campaign.startDate);
+        const endDate = new Date(campaign.endDate);
+        const diffTime = endDate.getTime() - startDate.getTime();
+        const diffDays = Math.ceil(diffTime / (1000 * 60 * 60 * 24));
+        if (diffDays > 0) {
+          durationNights = diffDays;
+        }
+      }
+
       const { error } = await supabase
         .from('campaigns')
         .insert({
@@ -85,6 +97,7 @@ export const CampaignProvider: React.FC<CampaignProviderProps> = ({ children }) 
           price_label: campaign.priceLabel,
           start_date: campaign.startDate,
           end_date: campaign.endDate,
+          duration_nights: durationNights,
           is_active: campaign.status === 'active',
           image_url: campaign.image,
           category: campaign.category
@@ -104,20 +117,33 @@ export const CampaignProvider: React.FC<CampaignProviderProps> = ({ children }) 
 
   const updateCampaign = async (id: string, updatedCampaign: Partial<Campaign>) => {
     try {
+      // Calcular duration_nights a partir das datas se foram fornecidas
+      let updateData: any = {
+        title: updatedCampaign.title,
+        description: updatedCampaign.description,
+        price_original: updatedCampaign.priceOriginal,
+        price_promotional: updatedCampaign.pricePromotional,
+        price_label: updatedCampaign.priceLabel,
+        start_date: updatedCampaign.startDate,
+        end_date: updatedCampaign.endDate,
+        is_active: updatedCampaign.status === 'active',
+        image_url: updatedCampaign.image,
+        category: updatedCampaign.category
+      };
+
+      if (updatedCampaign.startDate && updatedCampaign.endDate) {
+        const startDate = new Date(updatedCampaign.startDate);
+        const endDate = new Date(updatedCampaign.endDate);
+        const diffTime = endDate.getTime() - startDate.getTime();
+        const diffDays = Math.ceil(diffTime / (1000 * 60 * 60 * 24));
+        if (diffDays > 0) {
+          updateData.duration_nights = diffDays;
+        }
+      }
+
       const { error } = await supabase
         .from('campaigns')
-        .update({
-          title: updatedCampaign.title,
-          description: updatedCampaign.description,
-          price_original: updatedCampaign.priceOriginal,
-          price_promotional: updatedCampaign.pricePromotional,
-          price_label: updatedCampaign.priceLabel,
-          start_date: updatedCampaign.startDate,
-          end_date: updatedCampaign.endDate,
-          is_active: updatedCampaign.status === 'active',
-          image_url: updatedCampaign.image,
-          category: updatedCampaign.category
-        })
+        .update(updateData)
         .eq('id', id);
 
       if (error) {
