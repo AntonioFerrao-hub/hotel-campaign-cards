@@ -6,6 +6,18 @@ import { Badge } from '@/components/ui/badge';
 import { Calendar, Clock, Edit, Trash2 } from 'lucide-react';
 import { useCampaigns } from '@/contexts/CampaignContext';
 import { useToast } from '@/hooks/use-toast';
+import { supabase } from '@/integrations/supabase/client';
+import {
+  AlertDialog,
+  AlertDialogAction,
+  AlertDialogCancel,
+  AlertDialogContent,
+  AlertDialogDescription,
+  AlertDialogFooter,
+  AlertDialogHeader,
+  AlertDialogTitle,
+  AlertDialogTrigger,
+} from "@/components/ui/alert-dialog";
 
 interface CampaignCardProps {
   campaign: Campaign;
@@ -21,12 +33,38 @@ export const CampaignCard: React.FC<CampaignCardProps> = ({
   const { deleteCampaign } = useCampaigns();
   const { toast } = useToast();
 
-  const handleDelete = () => {
-    deleteCampaign(campaign.id);
-    toast({
-      title: "Campanha excluída",
-      description: `A campanha "${campaign.title}" foi excluída com sucesso.`,
-    });
+  const handleDelete = async () => {
+    try {
+      const { error } = await supabase
+        .from('campaigns')
+        .delete()
+        .eq('id', campaign.id);
+
+      if (error) {
+        console.error('Erro ao deletar campanha:', error);
+        toast({
+          title: "Erro",
+          description: "Erro ao deletar a campanha. Tente novamente.",
+          variant: "destructive",
+        });
+        return;
+      }
+
+      // Atualiza o context local também
+      deleteCampaign(campaign.id);
+      
+      toast({
+        title: "Campanha excluída",
+        description: `A campanha "${campaign.title}" foi excluída com sucesso.`,
+      });
+    } catch (error) {
+      console.error('Erro inesperado ao deletar campanha:', error);
+      toast({
+        title: "Erro",
+        description: "Erro inesperado ao deletar a campanha.",
+        variant: "destructive",
+      });
+    }
   };
 
   const formatPrice = (price: number) => {
@@ -60,14 +98,31 @@ export const CampaignCard: React.FC<CampaignCardProps> = ({
             >
               <Edit className="h-4 w-4" />
             </Button>
-            <Button
-              size="sm"
-              variant="destructive"
-              onClick={handleDelete}
-              className="h-8 w-8 p-0"
-            >
-              <Trash2 className="h-4 w-4" />
-            </Button>
+            <AlertDialog>
+              <AlertDialogTrigger asChild>
+                <Button
+                  size="sm"
+                  variant="destructive"
+                  className="h-8 w-8 p-0"
+                >
+                  <Trash2 className="h-4 w-4" />
+                </Button>
+              </AlertDialogTrigger>
+              <AlertDialogContent>
+                <AlertDialogHeader>
+                  <AlertDialogTitle>Excluir campanha</AlertDialogTitle>
+                  <AlertDialogDescription>
+                    Tem certeza que deseja excluir a campanha "{campaign.title}"? Esta ação não pode ser desfeita.
+                  </AlertDialogDescription>
+                </AlertDialogHeader>
+                <AlertDialogFooter>
+                  <AlertDialogCancel>Cancelar</AlertDialogCancel>
+                  <AlertDialogAction onClick={handleDelete} className="bg-destructive text-destructive-foreground hover:bg-destructive/90">
+                    Excluir
+                  </AlertDialogAction>
+                </AlertDialogFooter>
+              </AlertDialogContent>
+            </AlertDialog>
           </div>
         )}
       </div>
