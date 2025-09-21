@@ -16,7 +16,7 @@ import {
 import { Campaign } from '@/types/campaign';
 
 export const Dashboard: React.FC = () => {
-  const { campaigns } = useCampaigns();
+  const { campaigns, loading } = useCampaigns();
   const { logout, user } = useAuth();
   const [searchTerm, setSearchTerm] = useState('');
   const [selectedCategory, setSelectedCategory] = useState<string>('');
@@ -124,7 +124,16 @@ export const Dashboard: React.FC = () => {
         </div>
 
         {/* Campaign Grid */}
-        {filteredCampaigns.length > 0 ? (
+        {loading ? (
+          <div className="text-center py-12">
+            <div className="h-24 w-24 mx-auto mb-4 rounded-full bg-muted flex items-center justify-center animate-pulse">
+              <Hotel className="h-8 w-8 text-muted-foreground" />
+            </div>
+            <h3 className="text-lg font-semibold text-foreground mb-2">
+              Carregando campanhas...
+            </h3>
+          </div>
+        ) : filteredCampaigns.length > 0 ? (
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
             {filteredCampaigns.map(campaign => (
               <CampaignCard

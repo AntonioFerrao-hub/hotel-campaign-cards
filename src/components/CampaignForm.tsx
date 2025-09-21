@@ -75,9 +75,11 @@ export const CampaignForm: React.FC<CampaignFormProps> = ({
       });
     }
   }, [campaign]);
+
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     setIsLoading(true);
+
     const campaignData: Omit<Campaign, 'id'> = {
       title: formData.title,
       description: formData.description,
@@ -89,19 +91,19 @@ export const CampaignForm: React.FC<CampaignFormProps> = ({
       duration: formData.duration,
       status: formData.status,
       category: formData.category,
-      location: 'São Paulo, SP',
-      // Default location
+      location: 'São Paulo, SP', // Default location
       maxGuests: 4 // Default max guests
     };
+
     try {
       if (campaign) {
-        updateCampaign(campaign.id, campaignData);
+        await updateCampaign(campaign.id, campaignData);
         toast({
           title: "Campanha atualizada!",
           description: `A campanha "${formData.title}" foi atualizada com sucesso.`
         });
       } else {
-        addCampaign(campaignData);
+        await addCampaign(campaignData);
         toast({
           title: "Campanha criada!",
           description: `A campanha "${formData.title}" foi criada com sucesso.`

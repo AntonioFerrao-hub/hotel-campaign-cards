@@ -1,13 +1,15 @@
-import React, { createContext, useContext, useState, ReactNode } from 'react';
+import React, { createContext, useContext, useState, useEffect, ReactNode } from 'react';
 import { Campaign } from '@/types/campaign';
-import { mockCampaigns } from '@/data/mockData';
+import { supabase } from '@/integrations/supabase/client';
 
 interface CampaignContextType {
   campaigns: Campaign[];
-  addCampaign: (campaign: Omit<Campaign, 'id'>) => void;
-  updateCampaign: (id: string, campaign: Partial<Campaign>) => void;
+  addCampaign: (campaign: Omit<Campaign, 'id'>) => Promise<void>;
+  updateCampaign: (id: string, campaign: Partial<Campaign>) => Promise<void>;
   deleteCampaign: (id: string) => void;
   getCampaign: (id: string) => Campaign | undefined;
+  loading: boolean;
+  refetch: () => Promise<void>;
 }
 
 const CampaignContext = createContext<CampaignContextType | undefined>(undefined);
@@ -25,22 +27,101 @@ interface CampaignProviderProps {
 }
 
 export const CampaignProvider: React.FC<CampaignProviderProps> = ({ children }) => {
-  const [campaigns, setCampaigns] = useState<Campaign[]>(mockCampaigns);
+  const [campaigns, setCampaigns] = useState<Campaign[]>([]);
+  const [loading, setLoading] = useState(true);
 
-  const addCampaign = (campaign: Omit<Campaign, 'id'>) => {
-    const newCampaign: Campaign = {
-      ...campaign,
-      id: Date.now().toString()
-    };
-    setCampaigns(prev => [...prev, newCampaign]);
+  const fetchCampaigns = async () => {
+    try {
+      setLoading(true);
+      const { data, error } = await supabase
+        .from('campaigns')
+        .select('*')
+        .order('created_at', { ascending: false });
+
+      if (error) {
+        console.error('Erro ao buscar campanhas:', error);
+        return;
+      }
+
+      // Mapear dados do Supabase para o formato esperado
+      const mappedCampaigns: Campaign[] = (data || []).map(campaign => ({
+        id: campaign.id,
+        title: campaign.title,
+        description: campaign.description || '',
+        price: campaign.price_promotional || campaign.price_original || 0,
+        priceLabel: 'A partir de',
+        image: '', // Será necessário adicionar campo de imagem na tabela
+        startDate: campaign.start_date ? new Date(campaign.start_date).toLocaleDateString('pt-BR') : '',
+        endDate: campaign.end_date ? new Date(campaign.end_date).toLocaleDateString('pt-BR') : '',
+        duration: '2 diárias', // Valor padrão, pode ser calculado
+        status: campaign.is_active ? 'active' : 'inactive',
+        category: 'Temporada', // Valor padrão, será necessário adicionar campo
+        location: 'São Paulo, SP', // Valor padrão, será necessário adicionar campo
+        maxGuests: 4, // Valor padrão, será necessário adicionar campo
+      }));
+
+      setCampaigns(mappedCampaigns);
+    } catch (error) {
+      console.error('Erro inesperado ao buscar campanhas:', error);
+    } finally {
+      setLoading(false);
+    }
   };
 
-  const updateCampaign = (id: string, updatedCampaign: Partial<Campaign>) => {
-    setCampaigns(prev => 
-      prev.map(campaign => 
-        campaign.id === id ? { ...campaign, ...updatedCampaign } : campaign
-      )
-    );
+  useEffect(() => {
+    fetchCampaigns();
+  }, []);
+
+  const addCampaign = async (campaign: Omit<Campaign, 'id'>) => {
+    try {
+      const { error } = await supabase
+        .from('campaigns')
+        .insert({
+          title: campaign.title,
+          description: campaign.description,
+          price_promotional: campaign.price,
+          start_date: campaign.startDate,
+          end_date: campaign.endDate,
+          is_active: campaign.status === 'active',
+          hotel_id: '00000000-0000-0000-0000-000000000000' // Valor temporário
+        });
+
+      if (error) {
+        throw error;
+      }
+
+      // Recarregar campanhas
+      await fetchCampaigns();
+    } catch (error) {
+      console.error('Erro ao adicionar campanha:', error);
+      throw error;
+    }
+  };
+
+  const updateCampaign = async (id: string, updatedCampaign: Partial<Campaign>) => {
+    try {
+      const { error } = await supabase
+        .from('campaigns')
+        .update({
+          title: updatedCampaign.title,
+          description: updatedCampaign.description,
+          price_promotional: updatedCampaign.price,
+          start_date: updatedCampaign.startDate,
+          end_date: updatedCampaign.endDate,
+          is_active: updatedCampaign.status === 'active',
+        })
+        .eq('id', id);
+
+      if (error) {
+        throw error;
+      }
+
+      // Recarregar campanhas
+      await fetchCampaigns();
+    } catch (error) {
+      console.error('Erro ao atualizar campanha:', error);
+      throw error;
+    }
   };
 
   const deleteCampaign = (id: string) => {
@@ -57,7 +138,9 @@ export const CampaignProvider: React.FC<CampaignProviderProps> = ({ children }) 
       addCampaign,
       updateCampaign,
       deleteCampaign,
-      getCampaign
+      getCampaign,
+      loading,
+      refetch: fetchCampaigns
     }}>
       {children}
     </CampaignContext.Provider>
