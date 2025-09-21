@@ -8,6 +8,7 @@ import { CampaignProvider } from "@/contexts/CampaignContext";
 import { Gallery } from "@/components/Gallery";
 import { Dashboard } from "@/components/Dashboard";
 import { AdminLayout } from "@/components/AdminLayout";
+import { UserManagement } from "@/components/UserManagement";
 import NotFound from "./pages/NotFound";
 
 const queryClient = new QueryClient();
@@ -22,14 +23,15 @@ const App = () => (
           <BrowserRouter>
             <Routes>
               <Route path="/" element={<Gallery />} />
-              <Route 
-                path="/admin" 
-                element={
-                  <AdminLayout>
-                    <Dashboard />
-                  </AdminLayout>
-                } 
-              />
+              <Route path="/admin/*" element={
+                <AdminLayout>
+                  <Routes>
+                    <Route index element={<Dashboard />} />
+                    <Route path="campaigns" element={<Dashboard />} />
+                    <Route path="users" element={<UserManagement />} />
+                  </Routes>
+                </AdminLayout>
+              } />
               {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}
               <Route path="*" element={<NotFound />} />
             </Routes>
