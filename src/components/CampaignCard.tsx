@@ -141,9 +141,16 @@ export const CampaignCard: React.FC<CampaignCardProps> = ({
           <p className="text-sm text-muted-foreground mb-2">
             {campaign.priceLabel}
           </p>
-          <p className="text-2xl font-bold text-ocean-primary">
-            {formatPrice(campaign.price)}
-          </p>
+          <div className="flex items-center gap-2">
+            <p className="text-2xl font-bold text-ocean-primary">
+              {formatPrice(campaign.pricePromotional)}
+            </p>
+            {campaign.priceOriginal > campaign.pricePromotional && (
+              <p className="text-sm text-muted-foreground line-through">
+                {formatPrice(campaign.priceOriginal)}
+              </p>
+            )}
+          </div>
           <p className="text-sm text-muted-foreground">
             {campaign.description}
           </p>

@@ -50,7 +50,8 @@ export const CampaignForm: React.FC<CampaignFormProps> = ({
   const [formData, setFormData] = useState({
     title: '',
     description: '',
-    price: '',
+    priceOriginal: '',
+    pricePromotional: '',
     priceLabel: 'A partir de',
     image: availableImages[0].url,
     startDate: '',
@@ -64,7 +65,8 @@ export const CampaignForm: React.FC<CampaignFormProps> = ({
       setFormData({
         title: campaign.title,
         description: campaign.description,
-        price: campaign.price.toString(),
+        priceOriginal: campaign.priceOriginal.toString(),
+        pricePromotional: campaign.pricePromotional.toString(),
         priceLabel: campaign.priceLabel,
         image: campaign.image,
         startDate: campaign.startDate,
@@ -83,7 +85,8 @@ export const CampaignForm: React.FC<CampaignFormProps> = ({
     const campaignData: Omit<Campaign, 'id'> = {
       title: formData.title,
       description: formData.description,
-      price: parseFloat(formData.price),
+      priceOriginal: parseFloat(formData.priceOriginal),
+      pricePromotional: parseFloat(formData.pricePromotional),
       priceLabel: formData.priceLabel,
       image: formData.image,
       startDate: formData.startDate,
@@ -228,19 +231,36 @@ export const CampaignForm: React.FC<CampaignFormProps> = ({
                 <Textarea id="description" value={formData.description} onChange={e => handleInputChange('description', e.target.value)} placeholder="Ex: Diária para dois adultos" required />
               </div>
 
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+              <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
                 <div className="space-y-2">
-                  <Label htmlFor="price">Preço (R$)</Label>
+                  <Label htmlFor="priceOriginal">Preço Original (R$)</Label>
                   <InputMask
                     mask="999999.99"
-                    value={formData.price}
-                    onChange={(e) => handleInputChange('price', e.target.value.replace(/[^\d.,]/g, '').replace(',', '.'))}
+                    value={formData.priceOriginal}
+                    onChange={(e) => handleInputChange('priceOriginal', e.target.value.replace(/[^\d.,]/g, '').replace(',', '.'))}
                   >
                     {(inputProps: any) => (
                       <Input 
                         {...inputProps}
-                        id="price" 
-                        placeholder="1834.00" 
+                        id="priceOriginal" 
+                        placeholder="1950.00" 
+                        required 
+                      />
+                    )}
+                  </InputMask>
+                </div>
+                <div className="space-y-2">
+                  <Label htmlFor="pricePromotional">Preço Promocional (R$)</Label>
+                  <InputMask
+                    mask="999999.99"
+                    value={formData.pricePromotional}
+                    onChange={(e) => handleInputChange('pricePromotional', e.target.value.replace(/[^\d.,]/g, '').replace(',', '.'))}
+                  >
+                    {(inputProps: any) => (
+                      <Input 
+                        {...inputProps}
+                        id="pricePromotional" 
+                        placeholder="1650.00" 
                         required 
                       />
                     )}

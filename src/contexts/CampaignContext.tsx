@@ -48,7 +48,8 @@ export const CampaignProvider: React.FC<CampaignProviderProps> = ({ children }) 
         id: campaign.id,
         title: campaign.title,
         description: campaign.description || '',
-        price: campaign.price_promotional || campaign.price_original || 0,
+        priceOriginal: campaign.price_original || 0,
+        pricePromotional: campaign.price_promotional || 0,
         priceLabel: 'A partir de',
         image: '', // Será necessário adicionar campo de imagem na tabela
         startDate: campaign.start_date ? new Date(campaign.start_date).toLocaleDateString('pt-BR') : '',
@@ -79,7 +80,8 @@ export const CampaignProvider: React.FC<CampaignProviderProps> = ({ children }) 
         .insert({
           title: campaign.title,
           description: campaign.description,
-          price_promotional: campaign.price,
+          price_original: campaign.priceOriginal,
+          price_promotional: campaign.pricePromotional,
           start_date: campaign.startDate,
           end_date: campaign.endDate,
           is_active: campaign.status === 'active',
@@ -105,7 +107,8 @@ export const CampaignProvider: React.FC<CampaignProviderProps> = ({ children }) 
         .update({
           title: updatedCampaign.title,
           description: updatedCampaign.description,
-          price_promotional: updatedCampaign.price,
+          price_original: updatedCampaign.priceOriginal,
+          price_promotional: updatedCampaign.pricePromotional,
           start_date: updatedCampaign.startDate,
           end_date: updatedCampaign.endDate,
           is_active: updatedCampaign.status === 'active',

@@ -155,8 +155,15 @@ export const Gallery: React.FC = () => {
                         <span>Máx. {campaign.maxGuests} hóspedes</span>
                       </div>
                       <div className="text-right">
-                        <div className="text-lg font-bold text-ocean-primary">
-                          R$ {campaign.price}
+                        <div className="flex items-center gap-2">
+                          <div className="text-lg font-bold text-ocean-primary">
+                            R$ {campaign.pricePromotional}
+                          </div>
+                          {campaign.priceOriginal > campaign.pricePromotional && (
+                            <div className="text-sm text-muted-foreground line-through">
+                              R$ {campaign.priceOriginal}
+                            </div>
+                          )}
                         </div>
                         <div className="text-xs text-muted-foreground">por noite</div>
                       </div>

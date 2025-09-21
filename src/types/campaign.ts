@@ -2,7 +2,8 @@ export interface Campaign {
   id: string;
   title: string;
   description: string;
-  price: number;
+  priceOriginal: number;
+  pricePromotional: number;
   priceLabel: string;
   image: string;
   startDate: string;
