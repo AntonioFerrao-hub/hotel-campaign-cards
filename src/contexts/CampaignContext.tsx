@@ -47,18 +47,18 @@ export const CampaignProvider: React.FC<CampaignProviderProps> = ({ children }) 
       const mappedCampaigns: Campaign[] = (data || []).map(campaign => ({
         id: campaign.id,
         title: campaign.title,
-        description: campaign.description || '',
+        description: campaign.description || 'Diária para dois adultos',
         priceOriginal: campaign.price_original || 0,
         pricePromotional: campaign.price_promotional || 0,
-        priceLabel: 'A partir de',
+        priceLabel: campaign.price_label || 'A partir de',
         image: campaign.image_url || '/placeholder.svg',
         startDate: campaign.start_date || '',
         endDate: campaign.end_date || '',
-        duration: '', // Será calculado se necessário
+        duration: campaign.duration_nights ? `${campaign.duration_nights} diárias` : '2 diárias',
         status: campaign.is_active ? 'active' : 'inactive',
         category: campaign.category || '',
-        location: '', // Remover valor padrão
-        maxGuests: 0, // Remover valor padrão
+        location: '',
+        maxGuests: 0,
       }));
 
       setCampaigns(mappedCampaigns);
@@ -82,6 +82,7 @@ export const CampaignProvider: React.FC<CampaignProviderProps> = ({ children }) 
           description: campaign.description,
           price_original: campaign.priceOriginal,
           price_promotional: campaign.pricePromotional,
+          price_label: campaign.priceLabel,
           start_date: campaign.startDate,
           end_date: campaign.endDate,
           is_active: campaign.status === 'active',
@@ -110,6 +111,7 @@ export const CampaignProvider: React.FC<CampaignProviderProps> = ({ children }) 
           description: updatedCampaign.description,
           price_original: updatedCampaign.priceOriginal,
           price_promotional: updatedCampaign.pricePromotional,
+          price_label: updatedCampaign.priceLabel,
           start_date: updatedCampaign.startDate,
           end_date: updatedCampaign.endDate,
           is_active: updatedCampaign.status === 'active',

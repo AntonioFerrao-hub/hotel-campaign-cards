@@ -19,11 +19,13 @@ export type Database = {
           category: string | null
           created_at: string
           description: string | null
+          duration_nights: number | null
           end_date: string | null
           hotel_id: string | null
           id: string
           image_url: string | null
           is_active: boolean | null
+          price_label: string | null
           price_original: number | null
           price_promotional: number | null
           start_date: string | null
@@ -34,11 +36,13 @@ export type Database = {
           category?: string | null
           created_at?: string
           description?: string | null
+          duration_nights?: number | null
           end_date?: string | null
           hotel_id?: string | null
           id?: string
           image_url?: string | null
           is_active?: boolean | null
+          price_label?: string | null
           price_original?: number | null
           price_promotional?: number | null
           start_date?: string | null
@@ -49,11 +53,13 @@ export type Database = {
           category?: string | null
           created_at?: string
           description?: string | null
+          duration_nights?: number | null
           end_date?: string | null
           hotel_id?: string | null
           id?: string
           image_url?: string | null
           is_active?: boolean | null
+          price_label?: string | null
           price_original?: number | null
           price_promotional?: number | null
           start_date?: string | null

@@ -3,7 +3,7 @@ import { Campaign } from '@/types/campaign';
 import { Card } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
-import { Calendar, Clock, Edit, Trash2 } from 'lucide-react';
+import { Calendar, Phone, Edit, Trash2 } from 'lucide-react';
 import { useCampaigns } from '@/contexts/CampaignContext';
 import { useToast } from '@/hooks/use-toast';
 import { supabase } from '@/integrations/supabase/client';
@@ -74,38 +74,54 @@ export const CampaignCard: React.FC<CampaignCardProps> = ({
     }).format(price);
   };
 
+  const formatDate = (dateString: string) => {
+    if (!dateString) return '';
+    const date = new Date(dateString);
+    return date.toLocaleDateString('pt-BR');
+  };
+
+  const getDurationText = (nights: number) => {
+    if (nights === 1) return '1 diária';
+    return `${nights} diárias`;
+  };
+
+  // Calcular número de noites entre as datas
+  const calculateNights = () => {
+    if (!campaign.startDate || !campaign.endDate) return 2;
+    const start = new Date(campaign.startDate);
+    const end = new Date(campaign.endDate);
+    const diffTime = end.getTime() - start.getTime();
+    const diffDays = Math.ceil(diffTime / (1000 * 60 * 60 * 24));
+    return diffDays > 0 ? diffDays : 2;
+  };
+
   return (
-    <Card className="group overflow-hidden bg-card hover:shadow-[var(--card-hover-shadow)] transition-[var(--transition-smooth)] border-border">
-      <div className="relative aspect-[16/10] overflow-hidden">
+    <Card className="w-full max-w-[280px] bg-white shadow-sm border border-gray-200 rounded-lg overflow-hidden group hover:shadow-md transition-shadow">
+      {/* Imagem */}
+      <div className="relative h-[160px] overflow-hidden">
         <img 
           src={campaign.image} 
           alt={campaign.title}
-          className="w-full h-full object-cover group-hover:scale-105 transition-[var(--transition-smooth)]"
+          className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300"
         />
-        <Badge 
-          variant={campaign.status === 'active' ? 'default' : 'secondary'}
-          className="absolute top-3 left-3"
-        >
-          {campaign.status === 'active' ? 'Ativa' : 'Inativa'}
-        </Badge>
         {showActions && (
-          <div className="absolute top-3 right-3 flex gap-2 opacity-0 group-hover:opacity-100 transition-[var(--transition-smooth)]">
+          <div className="absolute top-2 right-2 flex gap-1 opacity-0 group-hover:opacity-100 transition-opacity">
             <Button
               size="sm"
               variant="secondary"
               onClick={() => onEdit?.(campaign)}
-              className="h-8 w-8 p-0"
+              className="h-7 w-7 p-0 bg-white/90 hover:bg-white"
             >
-              <Edit className="h-4 w-4" />
+              <Edit className="h-3 w-3" />
             </Button>
             <AlertDialog>
               <AlertDialogTrigger asChild>
                 <Button
                   size="sm"
                   variant="destructive"
-                  className="h-8 w-8 p-0"
+                  className="h-7 w-7 p-0 bg-red-500/90 hover:bg-red-500"
                 >
-                  <Trash2 className="h-4 w-4" />
+                  <Trash2 className="h-3 w-3" />
                 </Button>
               </AlertDialogTrigger>
               <AlertDialogContent>
@@ -127,49 +143,46 @@ export const CampaignCard: React.FC<CampaignCardProps> = ({
         )}
       </div>
       
-      <div className="p-6">
-        <div className="mb-3">
-          <h3 className="font-semibold text-lg text-card-foreground mb-1">
-            {campaign.title}
-          </h3>
-          <Badge variant="outline" className="text-xs">
-            {campaign.category || 'Sem categoria'}
-          </Badge>
-        </div>
+      {/* Conteúdo */}
+      <div className="p-4 space-y-3">
+        {/* Título */}
+        <h3 className="font-medium text-gray-900 text-sm leading-tight">
+          {campaign.title}
+        </h3>
         
-        <div className="mb-4">
-          <p className="text-sm text-muted-foreground mb-2">
-            {campaign.priceLabel}
+        {/* Preço */}
+        <div className="space-y-1">
+          <p className="text-xs text-gray-500 uppercase tracking-wide">
+            A partir de
           </p>
-          <div className="flex items-center gap-2">
-            <p className="text-2xl font-bold text-ocean-primary">
-              {formatPrice(campaign.pricePromotional)}
-            </p>
-            {campaign.priceOriginal > campaign.pricePromotional && (
-              <p className="text-sm text-muted-foreground line-through">
-                {formatPrice(campaign.priceOriginal)}
-              </p>
-            )}
-          </div>
-          <p className="text-sm text-muted-foreground">
-            {campaign.description}
+          <p className="text-lg font-bold text-gray-900">
+            {formatPrice(campaign.pricePromotional || campaign.priceOriginal)}
+          </p>
+          <p className="text-xs text-gray-600">
+            {campaign.description || 'Diária para dois adultos'}
           </p>
         </div>
         
-        <div className="space-y-2 text-sm text-muted-foreground">
+        {/* Data e Duração */}
+        <div className="space-y-2 text-xs text-gray-600">
           {(campaign.startDate && campaign.endDate) && (
-            <div className="flex items-center gap-2">
-              <Calendar className="h-4 w-4" />
-              <span>Válida até {new Date(campaign.endDate).toLocaleDateString('pt-BR')}</span>
+            <div className="flex items-center gap-1">
+              <Calendar className="h-3 w-3" />
+              <span>{formatDate(campaign.startDate)} até {formatDate(campaign.endDate)}</span>
             </div>
           )}
-          {campaign.duration && (
-            <div className="flex items-center gap-2">
-              <Clock className="h-4 w-4" />
-              <span>{campaign.duration}</span>
-            </div>
-          )}
+          <div className="flex items-center gap-1">
+            <Phone className="h-3 w-3" />
+            <span>{getDurationText(calculateNights())}</span>
+          </div>
         </div>
+        
+        {/* Botão Ver Detalhes para cards públicos */}
+        {!showActions && (
+          <Button className="w-full bg-teal-600 hover:bg-teal-700 text-white text-sm py-2 rounded-md">
+            Ver Detalhes
+          </Button>
+        )}
       </div>
     </Card>
   );
