@@ -16,6 +16,7 @@ export type Database = {
     Tables: {
       campaigns: {
         Row: {
+          category: string | null
           created_at: string
           description: string | null
           end_date: string | null
@@ -30,6 +31,7 @@ export type Database = {
           updated_at: string
         }
         Insert: {
+          category?: string | null
           created_at?: string
           description?: string | null
           end_date?: string | null
@@ -44,6 +46,7 @@ export type Database = {
           updated_at?: string
         }
         Update: {
+          category?: string | null
           created_at?: string
           description?: string | null
           end_date?: string | null

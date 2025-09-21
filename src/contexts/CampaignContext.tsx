@@ -56,7 +56,7 @@ export const CampaignProvider: React.FC<CampaignProviderProps> = ({ children }) 
         endDate: campaign.end_date || '',
         duration: '2 diárias', // Valor padrão, pode ser calculado
         status: campaign.is_active ? 'active' : 'inactive',
-        category: 'Temporada', // Valor padrão, será necessário adicionar campo
+        category: campaign.category || 'Sem categoria', // Usando campo category do Supabase
         location: 'São Paulo, SP', // Valor padrão, será necessário adicionar campo
         maxGuests: 4, // Valor padrão, será necessário adicionar campo
       }));
@@ -84,7 +84,9 @@ export const CampaignProvider: React.FC<CampaignProviderProps> = ({ children }) 
           price_promotional: campaign.pricePromotional,
           start_date: campaign.startDate,
           end_date: campaign.endDate,
-          is_active: campaign.status === 'active'
+          is_active: campaign.status === 'active',
+          image_url: campaign.image,
+          category: campaign.category
         });
 
       if (error) {
@@ -111,6 +113,8 @@ export const CampaignProvider: React.FC<CampaignProviderProps> = ({ children }) 
           start_date: updatedCampaign.startDate,
           end_date: updatedCampaign.endDate,
           is_active: updatedCampaign.status === 'active',
+          image_url: updatedCampaign.image,
+          category: updatedCampaign.category
         })
         .eq('id', id);
 
