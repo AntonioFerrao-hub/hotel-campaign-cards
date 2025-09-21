@@ -65,8 +65,8 @@ export const CampaignForm: React.FC<CampaignFormProps> = ({
       setFormData({
         title: campaign.title,
         description: campaign.description,
-        priceOriginal: campaign.priceOriginal.toString(),
-        pricePromotional: campaign.pricePromotional.toString(),
+        priceOriginal: campaign.priceOriginal.toFixed(2).replace('.', ','),
+        pricePromotional: campaign.pricePromotional.toFixed(2).replace('.', ','),
         priceLabel: campaign.priceLabel,
         image: campaign.image,
         startDate: campaign.startDate,
@@ -78,6 +78,13 @@ export const CampaignForm: React.FC<CampaignFormProps> = ({
     }
   }, [campaign]);
 
+  const parseCurrency = (value: string) => {
+    if (!value) return 0;
+    const normalized = value.replace(/\./g, '').replace(',', '.');
+    const num = parseFloat(normalized);
+    return isNaN(num) ? 0 : num;
+  };
+
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     setIsLoading(true);
@@ -85,8 +92,8 @@ export const CampaignForm: React.FC<CampaignFormProps> = ({
     const campaignData: Omit<Campaign, 'id'> = {
       title: formData.title,
       description: formData.description,
-      priceOriginal: parseFloat(formData.priceOriginal),
-      pricePromotional: parseFloat(formData.pricePromotional),
+      priceOriginal: parseCurrency(formData.priceOriginal),
+      pricePromotional: parseCurrency(formData.pricePromotional),
       priceLabel: formData.priceLabel,
       image: formData.image,
       startDate: formData.startDate,
@@ -236,11 +243,18 @@ export const CampaignForm: React.FC<CampaignFormProps> = ({
                   <Label htmlFor="priceOriginal">Preço Original (R$)</Label>
                   <Input 
                     id="priceOriginal" 
-                    type="number"
-                    step="0.01"
+                    type="text"
+                    inputMode="decimal"
                     value={formData.priceOriginal}
-                    onChange={(e) => handleInputChange('priceOriginal', e.target.value)}
-                    placeholder="1950.00" 
+                    onChange={(e) => {
+                      const val = e.target.value.replace(/[^\d.,]/g, '');
+                      handleInputChange('priceOriginal', val);
+                    }}
+                    onBlur={() => {
+                      const formatted = new Intl.NumberFormat('pt-BR', { minimumFractionDigits: 2, maximumFractionDigits: 2 }).format(parseCurrency(formData.priceOriginal));
+                      handleInputChange('priceOriginal', formatted);
+                    }}
+                    placeholder="1.950,00" 
                     required 
                   />
                 </div>
@@ -248,11 +262,18 @@ export const CampaignForm: React.FC<CampaignFormProps> = ({
                   <Label htmlFor="pricePromotional">Preço Promocional (R$)</Label>
                   <Input 
                     id="pricePromotional" 
-                    type="number"
-                    step="0.01"
+                    type="text"
+                    inputMode="decimal"
                     value={formData.pricePromotional}
-                    onChange={(e) => handleInputChange('pricePromotional', e.target.value)}
-                    placeholder="1650.00" 
+                    onChange={(e) => {
+                      const val = e.target.value.replace(/[^\d.,]/g, '');
+                      handleInputChange('pricePromotional', val);
+                    }}
+                    onBlur={() => {
+                      const formatted = new Intl.NumberFormat('pt-BR', { minimumFractionDigits: 2, maximumFractionDigits: 2 }).format(parseCurrency(formData.pricePromotional));
+                      handleInputChange('pricePromotional', formatted);
+                    }}
+                    placeholder="1.650,00" 
                     required 
                   />
                 </div>

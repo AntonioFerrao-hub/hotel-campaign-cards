@@ -52,8 +52,8 @@ export const CampaignProvider: React.FC<CampaignProviderProps> = ({ children }) 
         pricePromotional: campaign.price_promotional || 0,
         priceLabel: 'A partir de',
         image: '', // Será necessário adicionar campo de imagem na tabela
-        startDate: campaign.start_date ? new Date(campaign.start_date).toLocaleDateString('pt-BR') : '',
-        endDate: campaign.end_date ? new Date(campaign.end_date).toLocaleDateString('pt-BR') : '',
+        startDate: campaign.start_date || '',
+        endDate: campaign.end_date || '',
         duration: '2 diárias', // Valor padrão, pode ser calculado
         status: campaign.is_active ? 'active' : 'inactive',
         category: 'Temporada', // Valor padrão, será necessário adicionar campo
