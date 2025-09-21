@@ -88,7 +88,7 @@ export const CampaignProvider: React.FC<CampaignProviderProps> = ({ children }) 
         }
       }
 
-      const { error } = await supabase
+      const { data, error } = await supabase
         .from('campaigns')
         .insert({
           title: campaign.title,
@@ -103,14 +103,18 @@ export const CampaignProvider: React.FC<CampaignProviderProps> = ({ children }) 
           image_url: campaign.image,
           category: campaign.category,
           booking_url: campaign.bookingUrl
-        });
+        })
+        .select('*');
 
       if (error) {
         throw error;
       }
 
-      // Recarregar campanhas
-      await fetchCampaigns();
+      // Força recarregamento das campanhas após a inserção
+      setTimeout(async () => {
+        await fetchCampaigns();
+      }, 100);
+      
     } catch (error) {
       console.error('Erro ao adicionar campanha:', error);
       throw error;
@@ -144,17 +148,21 @@ export const CampaignProvider: React.FC<CampaignProviderProps> = ({ children }) 
         }
       }
 
-      const { error } = await supabase
+      const { data, error } = await supabase
         .from('campaigns')
         .update(updateData)
-        .eq('id', id);
+        .eq('id', id)
+        .select('*');
 
       if (error) {
         throw error;
       }
 
-      // Recarregar campanhas
-      await fetchCampaigns();
+      // Força recarregamento das campanhas após a atualização
+      setTimeout(async () => {
+        await fetchCampaigns();
+      }, 100);
+      
     } catch (error) {
       console.error('Erro ao atualizar campanha:', error);
       throw error;
