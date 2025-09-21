@@ -7,8 +7,9 @@ import { Label } from '@/components/ui/label';
 import { Textarea } from '@/components/ui/textarea';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { Card, CardHeader, CardContent, CardTitle } from '@/components/ui/card';
-import { ArrowLeft, Save } from 'lucide-react';
+import { ArrowLeft, Save, Upload, X } from 'lucide-react';
 import { useToast } from '@/hooks/use-toast';
+import { supabase } from '@/integrations/supabase/client';
 
 // Import campaign images
 import resortSunset from '@/assets/resort-sunset.jpg';
@@ -44,6 +45,7 @@ export const CampaignForm: React.FC<CampaignFormProps> = ({
     toast
   } = useToast();
   const [isLoading, setIsLoading] = useState(false);
+  const [isUploading, setIsUploading] = useState(false);
   const [formData, setFormData] = useState({
     title: '',
     description: '',
@@ -121,6 +123,64 @@ export const CampaignForm: React.FC<CampaignFormProps> = ({
       [field]: value
     }));
   };
+
+  const handleImageUpload = async (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0];
+    if (!file) return;
+
+    // Validate file type
+    if (!file.type.startsWith('image/')) {
+      toast({
+        title: "Erro",
+        description: "Por favor, selecione apenas arquivos de imagem.",
+        variant: "destructive"
+      });
+      return;
+    }
+
+    // Validate file size (max 5MB)
+    if (file.size > 5 * 1024 * 1024) {
+      toast({
+        title: "Erro",
+        description: "A imagem deve ter no máximo 5MB.",
+        variant: "destructive"
+      });
+      return;
+    }
+
+    setIsUploading(true);
+    try {
+      const fileExt = file.name.split('.').pop();
+      const fileName = `${Date.now()}.${fileExt}`;
+      
+      const { data, error } = await supabase.storage
+        .from('campaign-images')
+        .upload(fileName, file);
+
+      if (error) throw error;
+
+      const { data: { publicUrl } } = supabase.storage
+        .from('campaign-images')
+        .getPublicUrl(fileName);
+
+      setFormData(prev => ({ ...prev, image: publicUrl }));
+      
+      toast({
+        title: "Sucesso",
+        description: "Imagem enviada com sucesso!"
+      });
+    } catch (error) {
+      console.error('Error uploading image:', error);
+      toast({
+        title: "Erro",
+        description: "Erro ao enviar a imagem. Tente novamente.",
+        variant: "destructive"
+      });
+    } finally {
+      setIsUploading(false);
+    }
+  };
+
   return <div className="min-h-screen bg-background p-4">
       <div className="container mx-auto max-w-2xl">
         <div className="mb-6">
@@ -207,11 +267,64 @@ export const CampaignForm: React.FC<CampaignFormProps> = ({
                 
               </div>
 
-              {/* Preview da imagem selecionada */}
-              <div className="space-y-2">
-                <Label>Preview da Imagem</Label>
-                <div className="w-full h-48 rounded-lg overflow-hidden border">
-                  <img src={formData.image} alt="Preview" className="w-full h-full object-cover" />
+              {/* Seletor de imagem e upload */}
+              <div className="space-y-4">
+                <div className="space-y-2">
+                  <Label>Imagem da Campanha</Label>
+                  
+                  {/* Upload de nova imagem */}
+                  <div className="flex gap-2">
+                    <input
+                      type="file"
+                      accept="image/*"
+                      onChange={handleImageUpload}
+                      className="hidden"
+                      id="image-upload"
+                    />
+                    <label
+                      htmlFor="image-upload"
+                      className="inline-flex items-center gap-2 px-4 py-2 border border-input bg-background hover:bg-accent hover:text-accent-foreground rounded-md cursor-pointer text-sm font-medium transition-colors"
+                    >
+                      <Upload className="h-4 w-4" />
+                      {isUploading ? 'Enviando...' : 'Upload Nova Imagem'}
+                    </label>
+                  </div>
+
+                  {/* Imagens predefinidas */}
+                  <div className="space-y-2">
+                    <Label className="text-sm text-muted-foreground">Ou escolha uma imagem predefinida:</Label>
+                    <div className="grid grid-cols-2 md:grid-cols-4 gap-2">
+                      {availableImages.map((img) => (
+                        <button
+                          key={img.url}
+                          type="button"
+                          onClick={() => setFormData(prev => ({ ...prev, image: img.url }))}
+                          className={`relative h-20 rounded-lg overflow-hidden border-2 transition-colors ${
+                            formData.image === img.url ? 'border-primary' : 'border-border hover:border-primary/50'
+                          }`}
+                        >
+                          <img src={img.url} alt={img.name} className="w-full h-full object-cover" />
+                          {formData.image === img.url && (
+                            <div className="absolute inset-0 bg-primary/20 flex items-center justify-center">
+                              <div className="bg-primary text-primary-foreground rounded-full p-1">
+                                <svg className="h-3 w-3" fill="currentColor" viewBox="0 0 20 20">
+                                  <path fillRule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clipRule="evenodd" />
+                                </svg>
+                              </div>
+                            </div>
+                          )}
+                        </button>
+                      ))}
+                    </div>
+                  </div>
+                </div>
+
+                {/* Preview da imagem selecionada */}
+                <div className="space-y-2">
+                  <Label>Preview da Imagem</Label>
+                  <div className="w-full h-48 rounded-lg overflow-hidden border">
+                    <img src={formData.image} alt="Preview" className="w-full h-full object-cover" />
+                  </div>
                 </div>
               </div>
 
