@@ -8,7 +8,7 @@ import { Label } from '@/components/ui/label';
 import { Textarea } from '@/components/ui/textarea';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { Card, CardHeader, CardContent, CardTitle } from '@/components/ui/card';
-import { ArrowLeft, Save, Upload, X } from 'lucide-react';
+import { ArrowLeft, Save, Upload, X, ExternalLink } from 'lucide-react';
 import { useToast } from '@/hooks/use-toast';
 import { supabase } from '@/integrations/supabase/client';
 
@@ -283,13 +283,27 @@ export const CampaignForm: React.FC<CampaignFormProps> = ({
 
               <div className="space-y-2">
                 <Label htmlFor="bookingUrl">Link de Reserva</Label>
-                <Input 
-                  id="bookingUrl" 
-                  type="url"
-                  value={formData.bookingUrl} 
-                  onChange={e => handleInputChange('bookingUrl', e.target.value)} 
-                  placeholder="https://exemplo.com/reserva" 
-                />
+                <div className="flex gap-2">
+                  <Input 
+                    id="bookingUrl" 
+                    type="url"
+                    value={formData.bookingUrl} 
+                    onChange={e => handleInputChange('bookingUrl', e.target.value)} 
+                    placeholder="https://exemplo.com/reserva" 
+                    className="flex-1"
+                  />
+                  {formData.bookingUrl && (
+                    <Button
+                      type="button"
+                      variant="outline"
+                      size="sm"
+                      onClick={() => window.open(formData.bookingUrl, '_blank')}
+                      className="bg-teal-600 hover:bg-teal-700 text-white border-teal-600 hover:border-teal-700 px-3"
+                    >
+                      <ExternalLink className="h-4 w-4" />
+                    </Button>
+                  )}
+                </div>
               </div>
 
               <div className="space-y-2">

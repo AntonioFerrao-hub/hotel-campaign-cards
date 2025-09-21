@@ -1,6 +1,6 @@
 import React from 'react';
-import { NavLink, useLocation } from 'react-router-dom';
-import { LayoutDashboard, Camera, Users, LogOut, Tag } from 'lucide-react';
+import { NavLink, useLocation, useNavigate } from 'react-router-dom';
+import { LayoutDashboard, Camera, Users, LogOut, Tag, Eye } from 'lucide-react';
 import { useAuth } from '@/contexts/AuthContext';
 import { LoginPage } from './LoginPage';
 import {
@@ -115,6 +115,11 @@ function AppSidebar() {
 
 export const AdminLayout: React.FC<AdminLayoutProps> = ({ children }) => {
   const { isAuthenticated, loading } = useAuth();
+  const navigate = useNavigate();
+
+  const handleViewGallery = () => {
+    navigate('/');
+  };
 
   if (loading) {
     return (
@@ -140,6 +145,15 @@ export const AdminLayout: React.FC<AdminLayoutProps> = ({ children }) => {
             <SidebarTrigger className="-ml-1" />
             <div className="h-6 w-px bg-border/40" />
             <h1 className="text-lg font-semibold">Administração</h1>
+            <div className="ml-auto">
+              <Button 
+                onClick={handleViewGallery}
+                className="bg-teal-600 hover:bg-teal-700 text-white text-sm py-2 px-4 rounded-md flex items-center gap-2"
+              >
+                <Eye className="h-4 w-4" />
+                Visualizar Galeria
+              </Button>
+            </div>
           </header>
           <main className="flex-1 p-6">
             {children}

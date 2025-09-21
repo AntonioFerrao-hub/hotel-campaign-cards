@@ -10,7 +10,6 @@ import {
   Plus, 
   Search, 
   LogOut, 
-  Filter,
   Hotel
 } from 'lucide-react';
 import { Campaign } from '@/types/campaign';
@@ -49,22 +48,20 @@ export const Dashboard: React.FC = () => {
   return (
     <div className="min-h-screen bg-background">
       {/* Header */}
-      <header className="border-b border-border bg-card shadow-sm">
-        <div className="container mx-auto px-4 py-4 flex items-center justify-between">
-          <div className="flex items-center gap-3">
-            <div className="h-10 w-10 rounded-full bg-ocean-primary flex items-center justify-center">
-              <Hotel className="h-5 w-5 text-primary-foreground" />
-            </div>
-            <div>
-              <h1 className="text-xl font-bold text-card-foreground">CMS Campanhas</h1>
-              <p className="text-sm text-muted-foreground">Bem-vindo, {user?.name}</p>
-            </div>
+      <header className="border-b border-border bg-card shadow-sm container mx-auto px-4 py-4 flex items-center justify-between">
+        <div className="flex items-center gap-3">
+          <div className="h-10 w-10 rounded-full bg-ocean-primary flex items-center justify-center">
+            <Hotel className="h-5 w-5 text-primary-foreground" />
           </div>
-          <Button variant="outline" onClick={logout} className="gap-2">
-            <LogOut className="h-4 w-4" />
-            Sair
-          </Button>
+          <div>
+            <h1 className="text-xl font-bold text-card-foreground">CMS Campanhas</h1>
+            <p className="text-sm text-muted-foreground">Bem-vindo, {user?.name}</p>
+          </div>
         </div>
+        <Button variant="outline" onClick={logout} className="gap-2">
+          <LogOut className="h-4 w-4" />
+          Sair
+        </Button>
       </header>
 
       {/* Main Content */}
@@ -72,14 +69,12 @@ export const Dashboard: React.FC = () => {
         {/* Controls */}
         <div className="mb-8 space-y-4">
           <div className="flex flex-col sm:flex-row gap-4 items-start sm:items-center justify-between">
-            <div>
-              <h2 className="text-2xl font-bold text-foreground mb-2">
-                Campanhas de Hotéis
-              </h2>
-              <p className="text-muted-foreground">
-                {filteredCampaigns.length} campanha(s) encontrada(s)
-              </p>
-            </div>
+            <h2 className="text-2xl font-bold text-foreground mb-2">
+              Campanhas de Hotéis
+            </h2>
+            <p className="text-muted-foreground">
+              {filteredCampaigns.length} campanha(s) encontrada(s)
+            </p>
             <Button 
               onClick={() => setShowForm(true)}
               className="bg-ocean-primary hover:bg-ocean-dark gap-2"
@@ -100,27 +95,24 @@ export const Dashboard: React.FC = () => {
                 className="pl-10"
               />
             </div>
-            <div className="flex flex-wrap gap-2 items-center">
-              <Filter className="h-4 w-4 text-muted-foreground" />
+            <Badge
+              variant={selectedCategory === '' ? 'default' : 'outline'}
+              className="cursor-pointer"
+              onClick={() => setSelectedCategory('')}
+            >
+              Todas
+            </Badge>
+            {categories.map(category => (
               <Badge
-                variant={selectedCategory === '' ? 'default' : 'outline'}
+                key={category}
+                variant={selectedCategory === category ? 'default' : 'outline'}
                 className="cursor-pointer"
-                onClick={() => setSelectedCategory('')}
+                onClick={() => setSelectedCategory(category)}
               >
-                Todas
+                {category}
               </Badge>
-              {categories.map(category => (
-                <Badge
-                  key={category}
-                  variant={selectedCategory === category ? 'default' : 'outline'}
-                  className="cursor-pointer"
-                  onClick={() => setSelectedCategory(category)}
-                >
-                  {category}
-                </Badge>
-              ))}
-            </div>
-          </div>
+            ))}
+        </div>
         </div>
 
         {/* Campaign Grid */}

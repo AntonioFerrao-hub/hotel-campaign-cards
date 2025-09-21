@@ -25,6 +25,19 @@ export const CategoryManagement: React.FC = () => {
   const [isDialogOpen, setIsDialogOpen] = useState(false);
   const [formData, setFormData] = useState({ name: '', description: '' });
 
+  // Generate slug from name
+  const generateSlug = (name: string): string => {
+    return name
+      .toLowerCase()
+      .normalize('NFD')
+      .replace(/[\u0300-\u036f]/g, '') // Remove accents
+      .replace(/[^a-z0-9\s-]/g, '') // Remove special characters
+      .replace(/\s+/g, '-') // Replace spaces with hyphens
+      .replace(/-+/g, '-') // Replace multiple hyphens with single
+      .trim()
+      .replace(/^-+|-+$/g, ''); // Remove leading/trailing hyphens
+  };
+
   // Fetch categories from Supabase
   const fetchCategories = async () => {
     try {
@@ -71,6 +84,7 @@ export const CategoryManagement: React.FC = () => {
         .from('categories')
         .insert({
           name: formData.name.trim(),
+          slug: generateSlug(formData.name.trim()),
           description: formData.description.trim() || null
         });
 
@@ -104,6 +118,7 @@ export const CategoryManagement: React.FC = () => {
         .from('categories')
         .update({
           name: formData.name.trim(),
+          slug: generateSlug(formData.name.trim()),
           description: formData.description.trim() || null
         })
         .eq('id', editingCategory.id);
