@@ -71,7 +71,11 @@ function AppSidebar() {
               {adminMenuItems.map((item) => (
                 <SidebarMenuItem key={item.title}>
                   <SidebarMenuButton asChild isActive={isActive(item.url)}>
-                    <NavLink to={item.url} end={item.url === "/admin"}>
+                    <NavLink 
+                      to={item.url} 
+                      end={item.url === "/admin"}
+                      className={({ isActive }) => isActive ? "flex items-center" : "flex items-center"}
+                    >
                       <item.icon className="mr-2 h-4 w-4" />
                       <span>{item.title}</span>
                     </NavLink>
