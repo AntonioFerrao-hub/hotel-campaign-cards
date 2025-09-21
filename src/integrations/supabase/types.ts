@@ -19,7 +19,7 @@ export type Database = {
           created_at: string
           description: string | null
           end_date: string | null
-          hotel_id: string
+          hotel_id: string | null
           id: string
           is_active: boolean | null
           price_original: number | null
@@ -32,7 +32,7 @@ export type Database = {
           created_at?: string
           description?: string | null
           end_date?: string | null
-          hotel_id: string
+          hotel_id?: string | null
           id?: string
           is_active?: boolean | null
           price_original?: number | null
@@ -45,7 +45,7 @@ export type Database = {
           created_at?: string
           description?: string | null
           end_date?: string | null
-          hotel_id?: string
+          hotel_id?: string | null
           id?: string
           is_active?: boolean | null
           price_original?: number | null
@@ -54,15 +54,7 @@ export type Database = {
           title?: string
           updated_at?: string
         }
-        Relationships: [
-          {
-            foreignKeyName: "campaigns_hotel_id_fkey"
-            columns: ["hotel_id"]
-            isOneToOne: false
-            referencedRelation: "hotels"
-            referencedColumns: ["id"]
-          },
-        ]
+        Relationships: []
       }
       categories: {
         Row: {

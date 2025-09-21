@@ -84,8 +84,7 @@ export const CampaignProvider: React.FC<CampaignProviderProps> = ({ children }) 
           price_promotional: campaign.pricePromotional,
           start_date: campaign.startDate,
           end_date: campaign.endDate,
-          is_active: campaign.status === 'active',
-          hotel_id: '00000000-0000-0000-0000-000000000000' // Valor temporário
+          is_active: campaign.status === 'active'
         });
 
       if (error) {
