@@ -7,6 +7,7 @@ import { Calendar, Phone, Edit, Trash2 } from 'lucide-react';
 import { useCampaigns } from '@/contexts/CampaignContext';
 import { useToast } from '@/hooks/use-toast';
 import { supabase } from '@/integrations/supabase/client';
+import { useNavigate } from 'react-router-dom';
 import {
   AlertDialog,
   AlertDialogAction,
@@ -32,6 +33,17 @@ export const CampaignCard: React.FC<CampaignCardProps> = ({
 }) => {
   const { deleteCampaign } = useCampaigns();
   const { toast } = useToast();
+  const navigate = useNavigate();
+
+  const handleReserve = () => {
+    // Navigate to booking page or show booking modal
+    toast({
+      title: "Reserve Já",
+      description: `Redirecionando para reserva da campanha "${campaign.title}"`,
+    });
+    // For now, we'll just show a toast. In a real app, this would navigate to a booking page
+    // navigate(`/booking/${campaign.id}`);
+  };
 
   const handleDelete = async () => {
     try {
@@ -179,7 +191,10 @@ export const CampaignCard: React.FC<CampaignCardProps> = ({
         
         {/* Botão Reserve Já para cards públicos */}
         {!showActions && (
-          <Button className="w-full bg-teal-600 hover:bg-teal-700 text-white text-sm py-2 rounded-md">
+          <Button 
+            onClick={handleReserve}
+            className="w-full bg-teal-600 hover:bg-teal-700 text-white text-sm py-2 rounded-md"
+          >
             Reserve Já
           </Button>
         )}
