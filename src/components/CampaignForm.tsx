@@ -78,6 +78,21 @@ export const CampaignForm: React.FC<CampaignFormProps> = ({
     }
   }, [campaign]);
 
+  // Calculate duration automatically when dates change
+  useEffect(() => {
+    if (formData.startDate && formData.endDate) {
+      const startDate = new Date(formData.startDate);
+      const endDate = new Date(formData.endDate);
+      const diffTime = endDate.getTime() - startDate.getTime();
+      const diffDays = Math.ceil(diffTime / (1000 * 60 * 60 * 24));
+      
+      if (diffDays > 0) {
+        const duration = diffDays === 1 ? '1 diária' : `${diffDays} diárias`;
+        setFormData(prev => ({ ...prev, duration }));
+      }
+    }
+  }, [formData.startDate, formData.endDate]);
+
   const parseCurrency = (value: string) => {
     if (!value) return 0;
     const normalized = value.replace(/\./g, '').replace(',', '.');
@@ -306,7 +321,13 @@ export const CampaignForm: React.FC<CampaignFormProps> = ({
                 </div>
                 <div className="space-y-2">
                   <Label htmlFor="duration">Duração</Label>
-                  <Input id="duration" value={formData.duration} onChange={e => handleInputChange('duration', e.target.value)} placeholder="2 diárias" required />
+                  <Input 
+                    id="duration" 
+                    value={formData.duration} 
+                    readOnly 
+                    placeholder="Será calculado automaticamente" 
+                    className="bg-muted cursor-not-allowed"
+                  />
                 </div>
               </div>
 
