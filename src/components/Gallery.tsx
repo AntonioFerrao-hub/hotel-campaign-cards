@@ -32,25 +32,14 @@ export const Gallery: React.FC = () => {
                 <p className="text-sm text-muted-foreground">Descubra experiências únicas</p>
               </div>
             </div>
-            <Link to="/admin">
-              <Button variant="outline" className="gap-2">
-                Área Administrativa
-              </Button>
-            </Link>
+            
           </div>
         </div>
       </header>
 
       {/* Hero Section */}
       <section className="bg-gradient-ocean text-primary-foreground py-12">
-        <div className="container mx-auto px-4 text-center">
-          <h2 className="text-4xl font-bold mb-4">
-            Experiências Inesquecíveis
-          </h2>
-          <p className="text-lg opacity-90 max-w-2xl mx-auto">
-            Explore nossa seleção de hotéis e resorts premium com campanhas exclusivas
-          </p>
-        </div>
+        
       </section>
 
       {/* Search and Filters */}
@@ -58,12 +47,7 @@ export const Gallery: React.FC = () => {
         <div className="flex flex-col sm:flex-row gap-4 mb-8">
           <div className="relative flex-1">
             <Search className="absolute left-3 top-3 h-4 w-4 text-muted-foreground" />
-            <Input 
-              placeholder="Buscar campanhas..." 
-              value={searchTerm}
-              onChange={(e) => setSearchTerm(e.target.value)}
-              className="pl-10"
-            />
+            
           </div>
           <div className="flex flex-wrap gap-2 items-center">
             <Filter className="h-4 w-4 text-muted-foreground" />
@@ -127,7 +111,7 @@ export const Gallery: React.FC = () => {
                       </div>
                       <div className="text-right">
                         <div className="text-lg font-bold text-ocean-primary">
-                          R$ {campaign.pricePromotional}
+                          R$ {campaign.price}
                         </div>
                         <div className="text-xs text-muted-foreground">por noite</div>
                       </div>
