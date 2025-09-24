@@ -1,0 +1,107 @@
+# ========================================
+# DOCKERIGNORE - Hotel Campaign Cards
+# ========================================
+
+# Dependências
+node_modules
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+
+# Build outputs
+dist
+build
+.next
+
+# Logs
+*.log
+logs
+
+# Runtime data
+pids
+*.pid
+*.seed
+*.pid.lock
+
+# Coverage directory usado por ferramentas como istanbul
+coverage
+*.lcov
+
+# Arquivos de ambiente (podem conter secrets)
+.env
+.env.local
+.env.development.local
+.env.test.local
+.env.production.local
+
+# Git
+.git
+.gitignore
+README.md
+.github
+
+# IDE
+.vscode
+.idea
+*.swp
+*.swo
+*~
+
+# OS
+.DS_Store
+.DS_Store?
+._*
+.Spotlight-V100
+.Trashes
+ehthumbs.db
+Thumbs.db
+
+# Arquivos temporários
+*.tmp
+*.temp
+.cache
+
+# Arquivos de teste
+test
+tests
+**/*.test.js
+**/*.test.ts
+**/*.spec.js
+**/*.spec.ts
+
+# Documentação
+docs
+*.md
+!README.md
+
+# Arquivos SQL de desenvolvimento (manter apenas os essenciais)
+*.sql
+!CRIAR_FUNCAO_GET_USERS.sql
+!CRIAR_FUNCAO_TOGGLE_USER_STATUS.sql
+
+# Supabase local
+supabase/.temp
+supabase/functions
+supabase/seed.sql
+
+# Arquivos de configuração de desenvolvimento
+.eslintrc*
+.prettierrc*
+jest.config.*
+cypress.json
+cypress
+
+# Arquivos de backup
+*.bak
+*.backup
+
+# Arquivos de lock alternativos
+yarn.lock
+pnpm-lock.yaml
+
+# Arquivos específicos do projeto
+test_*.html
+test_*.js
+url.md
+INSTRUCOES_*.md
+DOCUMENTACAO_*.md

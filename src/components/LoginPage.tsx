@@ -69,9 +69,14 @@ export const LoginPage: React.FC = () => {
           
           <div className="mt-6 p-4 bg-muted rounded-lg">
             <h4 className="font-medium mb-2">Credenciais de Teste:</h4>
-            <p className="text-sm text-muted-foreground">
-              <strong>Email:</strong> suporte@wfinformatica.com.br<br />
-              <strong>Senha:</strong> 123456
+            <div className="space-y-2 text-sm text-muted-foreground">
+              <p><strong>Admin:</strong> admin@hotel.com.br / admin123</p>
+              <p><strong>Usuário:</strong> user@hotel.com.br / user123</p>
+              <p><strong>Suporte:</strong> suporte@wfinformatica.com.br / suporte123</p>
+              <p><strong>Manager:</strong> manager@hotel.com.br / manager123</p>
+            </div>
+            <p className="text-xs text-muted-foreground mt-2">
+              ⚠️ Execute o script SQL no Supabase Dashboard antes de testar
             </p>
           </div>
         </CardContent>

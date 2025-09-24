@@ -1,0 +1,195 @@
+# ========================================
+# PORTAINER STACK - Hotel Campaign Cards
+# Sistema de Gerenciamento de Campanhas
+# ========================================
+
+version: '3.8'
+
+services:
+  # ========================================
+  # APLICAÇÃO WEB PRINCIPAL
+  # ========================================
+  hotel-campaign-app:
+    build:
+      context: .
+      dockerfile: Dockerfile
+      target: production
+    image: hotel-campaign-cards:latest
+    container_name: hotel-campaign-cards
+    restart: unless-stopped
+    
+    # Portas expostas
+    ports:
+      - "80:80"
+      - "443:443"
+    
+    # Variáveis de ambiente
+    environment:
+      - NODE_ENV=production
+      - VITE_SUPABASE_URL=${SUPABASE_URL}
+      - VITE_SUPABASE_ANON_KEY=${SUPABASE_ANON_KEY}
+    
+    # Labels para o Portainer
+    labels:
+      - "traefik.enable=true"
+      - "traefik.http.routers.hotel-campaign.rule=Host(`hotel-campaign.local`)"
+      - "traefik.http.services.hotel-campaign.loadbalancer.server.port=80"
+      - "com.docker.compose.service=hotel-campaign-app"
+      - "description=Hotel Campaign Cards - Sistema de Campanhas"
+    
+    # Health check
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost/health"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 40s
+    
+    # Recursos limitados
+    deploy:
+      resources:
+        limits:
+          cpus: '1.0'
+          memory: 512M
+        reservations:
+          cpus: '0.5'
+          memory: 256M
+      restart_policy:
+        condition: on-failure
+        delay: 5s
+        max_attempts: 3
+    
+    # Rede
+    networks:
+      - hotel-network
+
+  # ========================================
+  # NGINX PROXY (OPCIONAL)
+  # ========================================
+  nginx-proxy:
+    image: nginx:alpine
+    container_name: hotel-nginx-proxy
+    restart: unless-stopped
+    
+    ports:
+      - "8080:80"
+    
+    volumes:
+      - ./nginx.conf:/etc/nginx/nginx.conf:ro
+    
+    depends_on:
+      - hotel-campaign-app
+    
+    labels:
+      - "traefik.enable=true"
+      - "traefik.http.routers.nginx-proxy.rule=Host(`proxy.hotel-campaign.local`)"
+      - "description=Nginx Proxy para Hotel Campaign Cards"
+    
+    deploy:
+      resources:
+        limits:
+          cpus: '0.5'
+          memory: 128M
+    
+    networks:
+      - hotel-network
+
+# ========================================
+# VOLUMES PERSISTENTES
+# ========================================
+volumes:
+  app-data:
+    driver: local
+    labels:
+      - "description=Dados persistentes da aplicação"
+
+# ========================================
+# REDES
+# ========================================
+networks:
+  hotel-network:
+    driver: bridge
+    labels:
+      - "description=Rede interna do Hotel Campaign Cards"
+
+# ========================================
+# CONFIGURAÇÕES PARA PORTAINER
+# ========================================
+
+# VARIÁVEIS DE AMBIENTE NECESSÁRIAS:
+# 
+# SUPABASE_URL=https://seu-projeto.supabase.co
+# SUPABASE_ANON_KEY=sua_chave_anonima_aqui
+#
+# Para configurar no Portainer:
+# 1. Vá em Stacks > Add Stack
+# 2. Cole este conteúdo
+# 3. Configure as variáveis de ambiente na seção "Environment variables"
+# 4. Deploy da stack
+
+# INSTRUÇÕES DE DEPLOY NO PORTAINER:
+#
+# 1. PREPARAÇÃO:
+#    - Faça upload dos arquivos (Dockerfile, nginx.conf, etc.) para o servidor
+#    - Ou use um repositório Git
+#
+# 2. CRIAR STACK:
+#    - Nome: hotel-campaign-cards
+#    - Método: Web editor (cole este arquivo)
+#    - Ou Git repository (se estiver no Git)
+#
+# 3. VARIÁVEIS DE AMBIENTE:
+#    - SUPABASE_URL: URL do seu projeto Supabase
+#    - SUPABASE_ANON_KEY: Chave anônima do Supabase
+#
+# 4. DEPLOY:
+#    - Clique em "Deploy the stack"
+#    - Aguarde o build e inicialização
+#
+# 5. ACESSO:
+#    - Aplicação: http://seu-servidor:80
+#    - Proxy: http://seu-servidor:8080
+#    - Health check: http://seu-servidor/health
+
+# MONITORAMENTO NO PORTAINER:
+#
+# - Containers: Visualize status e logs
+# - Images: Gerencie versões da imagem
+# - Volumes: Monitore uso de espaço
+# - Networks: Verifique conectividade
+# - Logs: Acesse logs em tempo real
+
+# ATUALIZAÇÕES:
+#
+# Para atualizar a aplicação:
+# 1. Faça rebuild da imagem
+# 2. No Portainer: Stack > hotel-campaign-cards > Editor
+# 3. Clique em "Update the stack"
+# 4. Ou use "Recreate" para forçar rebuild
+
+# BACKUP E RESTORE:
+#
+# Backup:
+# docker run --rm -v hotel-campaign-cards_app-data:/data -v $(pwd):/backup alpine tar czf /backup/backup.tar.gz /data
+#
+# Restore:
+# docker run --rm -v hotel-campaign-cards_app-data:/data -v $(pwd):/backup alpine tar xzf /backup/backup.tar.gz -C /
+
+# TROUBLESHOOTING:
+#
+# 1. Container não inicia:
+#    - Verifique logs no Portainer
+#    - Confirme variáveis de ambiente
+#    - Verifique se as portas estão livres
+#
+# 2. Build falha:
+#    - Confirme se Dockerfile está acessível
+#    - Verifique recursos disponíveis
+#    - Limpe imagens antigas
+#
+# 3. Aplicação não responde:
+#    - Teste health check: curl http://localhost/health
+#    - Verifique logs do container
+#    - Confirme configuração do Supabase
+
+# ========================================

@@ -1,0 +1,95 @@
+version: "3.9"
+
+networks:
+  ideiasia:
+    external: true
+
+services:
+  gl-app:
+    # Build direto do GitHub (quando disponível)
+    build:
+      context: https://github.com/AntonioFerrao-hub/hotel-campaign-cards.git
+      dockerfile: ./Dockerfile
+    image: ideiasia/hotel-campaign-cards:latest
+    restart: unless-stopped
+    
+    environment:
+      NODE_ENV: production
+      # PORTA CORRETA para aplicação React/Vite em produção
+      PORT: 80
+      
+      # VARIÁVEIS OBRIGATÓRIAS DO SUPABASE
+      VITE_SUPABASE_URL: ${SUPABASE_URL}
+      VITE_SUPABASE_ANON_KEY: ${SUPABASE_ANON_KEY}
+      
+      # Variáveis opcionais
+      TZ: America/Sao_Paulo
+      VITE_APP_TITLE: Hotel Campaign Cards
+    
+    networks:
+      - ideiasia
+    
+    # PORTA CORRETA - aplicação roda na porta 80 internamente
+    expose:
+      - "80"
+    
+    labels:
+      - "traefik.enable=true"
+      
+      # HTTPS no domínio
+      - "traefik.http.routers.gl.rule=Host(`gl.oceaniaparkhotel.com.br`)"
+      - "traefik.http.routers.gl.entrypoints=websecure"
+      - "traefik.http.routers.gl.tls=true"
+      - "traefik.http.routers.gl.tls.certresolver=letsencrypt"
+      
+      # PORTA CORRETA do serviço interno
+      - "traefik.http.services.gl.loadbalancer.server.port=80"
+      
+      # Redirecionamento HTTP -> HTTPS
+      - "traefik.http.routers.gl-http.rule=Host(`gl.oceaniaparkhotel.com.br`)"
+      - "traefik.http.routers.gl-http.entrypoints=web"
+      - "traefik.http.routers.gl-http.middlewares=gl-redirect"
+      - "traefik.http.middlewares.gl-redirect.redirectscheme.scheme=https"
+    
+    # HEALTH CHECK CORRIGIDO para aplicação React
+    healthcheck:
+      test: ["CMD-SHELL", "wget -qO- http://localhost/health || curl -f http://localhost/ || exit 1"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 40s
+    
+    # Limites de recursos (opcional)
+    deploy:
+      resources:
+        limits:
+          cpus: '1.0'
+          memory: 512M
+        reservations:
+          cpus: '0.5'
+          memory: 256M
+      restart_policy:
+        condition: on-failure
+        delay: 5s
+        max_attempts: 3
+
+# ========================================
+# PRINCIPAIS CORREÇÕES FEITAS:
+# ========================================
+# 
+# 1. PORTA: Mudou de 3000 para 80 (padrão do Nginx no Dockerfile)
+# 2. VARIÁVEIS: Adicionadas variáveis obrigatórias do Supabase
+# 3. HEALTH CHECK: Corrigido para aplicação React/SPA
+# 4. DOCKERFILE: Especificado caminho correto
+# 5. RECURSOS: Adicionados limites de CPU/memória
+# 
+# ========================================
+# VARIÁVEIS DE AMBIENTE NECESSÁRIAS:
+# ========================================
+# 
+# No Portainer, configure estas variáveis:
+# 
+# SUPABASE_URL=https://seu-projeto.supabase.co
+# SUPABASE_ANON_KEY=sua_chave_anonima_aqui
+# 
+# ========================================

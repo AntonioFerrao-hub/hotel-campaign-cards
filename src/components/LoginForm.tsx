@@ -28,7 +28,7 @@ export const LoginForm: React.FC = () => {
     } else {
       toast({
         title: "Erro no login",
-        description: "Email ou senha incorretos. Tente: admin@hotel.com / admin123",
+        description: "Email ou senha incorretos. Tente: admin@hotel.com.br / admin123",
         variant: "destructive",
       });
     }
@@ -59,7 +59,7 @@ export const LoginForm: React.FC = () => {
                 <Input
                   id="email"
                   type="email"
-                  placeholder="admin@hotel.com"
+                  placeholder="admin@hotel.com.br"
                   value={email}
                   onChange={(e) => setEmail(e.target.value)}
                   className="pl-10"
@@ -94,7 +94,7 @@ export const LoginForm: React.FC = () => {
           <div className="mt-6 p-4 bg-ocean-light rounded-lg">
             <p className="text-sm text-ocean-dark">
               <strong>Credenciais de teste:</strong><br />
-              Email: admin@hotel.com<br />
+              Email: admin@hotel.com.br<br />
               Senha: admin123
             </p>
           </div>
