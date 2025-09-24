@@ -6,8 +6,8 @@
 1. **Cole o arquivo**: `portainer-stack-final.yml`
 2. **Preencha as Environment Variables**:
    ```
-   SUPABASE_URL=https://SEU_PROJETO.supabase.co
-   SUPABASE_ANON_KEY=SUA_CHAVE_ANONIMA_AQUI
+   SUPABASE_URL=https://mpdblvvznqpajascuxxb.supabase.co
+   SUPABASE_ANON_KEY=eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Im1wZGJsdnZ6bnFwYWphc2N1eHhiIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NDE3MjYyOTEsImV4cCI6MjA1NzMwMjI5MX0.8bFGtwYMWwkaHNtZD2-zNYoN-Tvp_cVdiaCjpmkPzJ0
    ```
 3. **Deploy** ✅
    - ⚠️ **Importante**: Qualquer mudança nessas chaves → precisa rebuildar o serviço
