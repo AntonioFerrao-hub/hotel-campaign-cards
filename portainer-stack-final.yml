@@ -1,0 +1,41 @@
+version: "3.9"
+
+networks:
+  ideiasia:
+    external: true
+
+services:
+  gl-app:
+    build:
+      context: https://github.com/AntonioFerrao-hub/hotel-campaign-cards.git
+      dockerfile: ./Dockerfile
+      args:
+        VITE_SUPABASE_URL: ${SUPABASE_URL}
+        VITE_SUPABASE_ANON_KEY: ${SUPABASE_ANON_KEY}
+    image: ideiasia/hotel-campaign-cards:latest
+    restart: unless-stopped
+    environment:
+      NODE_ENV: production
+      TZ: America/Sao_Paulo
+      VITE_APP_TITLE: Hotel Campaign Cards   # opcional (se o app usar)
+    networks:
+      - ideiasia
+    expose:
+      - "80"
+    labels:
+      - "traefik.enable=true"
+      - "traefik.http.routers.gl.rule=Host(`gl.oceaniaparkhotel.com.br`)"
+      - "traefik.http.routers.gl.entrypoints=websecure"
+      - "traefik.http.routers.gl.tls=true"
+      - "traefik.http.routers.gl.tls.certresolver=letsencrypt"
+      - "traefik.http.services.gl.loadbalancer.server.port=80"
+      - "traefik.http.routers.gl-http.rule=Host(`gl.oceaniaparkhotel.com.br`)"
+      - "traefik.http.routers.gl-http.entrypoints=web"
+      - "traefik.http.routers.gl-http.middlewares=gl-redirect"
+      - "traefik.http.middlewares.gl-redirect.redirectscheme.scheme=https"
+    healthcheck:
+      test: ["CMD-SHELL", "curl -fsS http://localhost/ || wget -qO- http://localhost/ || exit 1"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 40s
