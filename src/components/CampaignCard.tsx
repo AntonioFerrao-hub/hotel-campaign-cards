@@ -3,7 +3,7 @@ import { Campaign } from '@/types/campaign';
 import { Card } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
-import { Calendar, Phone, Edit, Trash2 } from 'lucide-react';
+import { Calendar, Bed, Edit, Trash2 } from 'lucide-react';
 import { useCampaigns } from '@/contexts/CampaignContext';
 import { useToast } from '@/hooks/use-toast';
 import { supabase } from '@/integrations/supabase/client';
@@ -112,9 +112,12 @@ export const CampaignCard: React.FC<CampaignCardProps> = ({
   };
 
   return (
-    <Card className="w-[360px] h-[450px] bg-white shadow-lg border border-gray-200 rounded-[10px] overflow-hidden group hover:scale-[1.02] hover:shadow-xl transition-all duration-300 flex flex-col flex-shrink-0">
-      {/* Imagem com altura de 180px conforme HTML original */}
-        <div className="relative h-[180px] overflow-hidden">
+    <Card 
+      className="w-[360px] h-[450px] bg-white shadow-lg border border-gray-200 rounded-[10px] overflow-hidden group hover:scale-[1.02] hover:shadow-xl transition-all duration-300 flex flex-col flex-shrink-0 cursor-pointer"
+      onClick={handleReserve}
+    >
+      {/* Imagem ajustada para 240px + onda 30px = 270px total */}
+        <div className="relative h-[240px] overflow-hidden">
         <img 
           src={campaign.image} 
           alt={campaign.title}
@@ -127,7 +130,10 @@ export const CampaignCard: React.FC<CampaignCardProps> = ({
             <Button
               size="sm"
               variant="secondary"
-              onClick={() => onEdit?.(campaign)}
+              onClick={(e) => {
+                e.stopPropagation();
+                onEdit?.(campaign);
+              }}
               className="h-7 w-7 p-0 bg-white/90 hover:bg-white"
             >
               <Edit className="h-3 w-3" />
@@ -137,6 +143,7 @@ export const CampaignCard: React.FC<CampaignCardProps> = ({
                 <Button
                   size="sm"
                   variant="destructive"
+                  onClick={(e) => e.stopPropagation()}
                   className="h-7 w-7 p-0 bg-red-500/90 hover:bg-red-500"
                 >
                   <Trash2 className="h-3 w-3" />
@@ -166,51 +173,41 @@ export const CampaignCard: React.FC<CampaignCardProps> = ({
         <path d="M0,30 C150,60 350,0 500,30 L500,00 L0,0 Z" fill="#6e3b8f"></path>
       </svg>
 
-      {/* Conteúdo do card com padding de 20px */}
-      <div className="p-5 flex-1 flex flex-col justify-start">
-        {/* Título - 18px conforme HTML original */}
-        <div className="text-lg font-bold mb-2 text-gray-900">
+      {/* Conteúdo do card ajustado para exatamente 180px de altura */}
+      <div className="h-[180px] p-4 flex flex-col justify-start overflow-hidden">
+        {/* Título compacto */}
+        <div className="text-sm font-bold mb-1 text-gray-900 leading-tight">
           {campaign.title}
         </div>
         
-        {/* Label "A partir de" - 13px conforme HTML original */}
+        {/* Label "A partir de" */}
         <div className="text-xs text-gray-500 mb-1">
           A partir de
         </div>
         
-        {/* Preço - 24px conforme HTML original */}
-        <div className="text-2xl font-bold text-black mb-1">
+        {/* Preço em destaque mas menor */}
+        <div className="text-lg font-bold text-black mb-1">
           {formatPrice(campaign.pricePromotional || campaign.priceOriginal)}
         </div>
         
-        {/* Subtítulo - 14px conforme HTML original */}
-        <div className="text-sm font-bold mb-4">
+        {/* Subtítulo compacto */}
+        <div className="text-xs font-medium mb-2">
           {campaign.description || 'Diária para dois adultos'}
         </div>
         
-        {/* Informações com ícones - 14px conforme HTML original */}
+        {/* Informações com ícones - layout mais compacto */}
         <div className="flex flex-col space-y-1">
           {(campaign.startDate && campaign.endDate) && (
-            <div className="flex items-center text-sm text-gray-700">
-              <Calendar className="w-4 h-4 mr-2 fill-gray-600" />
+            <div className="flex items-center text-xs text-gray-700">
+              <Calendar className="w-3 h-3 mr-1 fill-gray-600" />
               <span>{formatDate(campaign.startDate)} até {formatDate(campaign.endDate)}</span>
             </div>
           )}
-          <div className="flex items-center text-sm text-gray-700">
-            <Phone className="w-4 h-4 mr-2 fill-gray-600" />
+          <div className="flex items-center text-xs text-gray-700">
+            <Bed className="w-3 h-3 mr-1 fill-gray-600" />
             <span>{getDurationText(calculateNights())}</span>
           </div>
         </div>
-        
-        {/* Botão Reserve Já para cards públicos */}
-        {!showActions && (
-          <Button 
-            onClick={handleReserve}
-            className="w-full bg-orange-500 hover:bg-orange-600 text-white text-sm font-semibold py-2 rounded-lg mt-auto"
-          >
-            Reserve Já
-          </Button>
-        )}
       </div>
     </Card>
   );
