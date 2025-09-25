@@ -173,39 +173,42 @@ export const CampaignCard: React.FC<CampaignCardProps> = ({
         <path d="M0,30 C150,60 350,0 500,30 L500,00 L0,0 Z" fill="#6e3b8f"></path>
       </svg>
 
-      {/* Conteúdo do card ajustado para exatamente 180px de altura */}
-      <div className="h-[180px] p-4 flex flex-col justify-start overflow-hidden">
-        {/* Título compacto */}
-        <div className="text-sm font-bold mb-1 text-gray-900 leading-tight">
-          {campaign.title}
+      {/* Conteúdo do card com min-height de 180px para flexibilidade */}
+      <div className="min-h-[180px] p-4 flex flex-col justify-between overflow-hidden">
+        <div className="flex flex-col">
+          {/* .title – Setembro 2025 – 18px – 8px margin-bottom */}
+          <div className="text-[18px] font-bold mb-[8px] text-gray-900 leading-tight line-clamp-1">
+            {campaign.title}
+          </div>
+          
+          {/* .label – A partir de – 13px – 2px margin-bottom */}
+          <div className="text-[13px] text-gray-500 mb-[2px]">
+            A partir de
+          </div>
+          
+          {/* .price – R$ 1.834,00 – 24px – 5px margin-bottom */}
+          <div className="text-[24px] font-bold text-black mb-[5px]">
+            {formatPrice(campaign.pricePromotional || campaign.priceOriginal)}
+          </div>
+          
+          {/* .sub – Diária para dois adultos – 14px – 15px margin-bottom */}
+          <div className="text-[14px] font-bold mb-[15px] line-clamp-1">
+            {campaign.description || 'Diária para dois adultos'}
+          </div>
         </div>
         
-        {/* Label "A partir de" */}
-        <div className="text-xs text-gray-500 mb-1">
-          A partir de
-        </div>
-        
-        {/* Preço em destaque mas menor */}
-        <div className="text-lg font-bold text-black mb-1">
-          {formatPrice(campaign.pricePromotional || campaign.priceOriginal)}
-        </div>
-        
-        {/* Subtítulo compacto */}
-        <div className="text-xs font-medium mb-2">
-          {campaign.description || 'Diária para dois adultos'}
-        </div>
-        
-        {/* Informações com ícones - layout mais compacto */}
-        <div className="flex flex-col space-y-1">
+        {/* Informações com ícones - 14px - fixadas na parte inferior */}
+        <div className="flex flex-col">
           {(campaign.startDate && campaign.endDate) && (
-            <div className="flex items-center text-xs text-gray-700">
-              <Calendar className="w-3 h-3 mr-1 fill-gray-600" />
-              <span>{formatDate(campaign.startDate)} até {formatDate(campaign.endDate)}</span>
+            <div className="flex items-center text-[14px] text-gray-700 mb-[4px]">
+              <Calendar className="w-4 h-4 mr-1 fill-gray-600" />
+              <span className="truncate">{formatDate(campaign.startDate)} até {formatDate(campaign.endDate)}</span>
             </div>
           )}
-          <div className="flex items-center text-xs text-gray-700">
-            <Bed className="w-3 h-3 mr-1 fill-gray-600" />
-            <span>{getDurationText(calculateNights())}</span>
+          {/* .info – 2 diárias (último item) – 14px – 0px margin-bottom */}
+          <div className="flex items-center text-[14px] text-gray-700 font-bold mb-[0px]">
+            <Bed className="w-4 h-4 mr-1 fill-gray-600" />
+            <span className="truncate">{getDurationText(calculateNights())}</span>
           </div>
         </div>
       </div>
