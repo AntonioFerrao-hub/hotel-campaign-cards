@@ -60,6 +60,7 @@ export const CampaignProvider: React.FC<CampaignProviderProps> = ({ children }) 
         location: '',
         maxGuests: 0,
         bookingUrl: campaign.booking_url || '',
+        waveColor: campaign.wave_color || '#3B82F6', // Cor padrão azul
       }));
 
       setCampaigns(mappedCampaigns);
@@ -102,7 +103,8 @@ export const CampaignProvider: React.FC<CampaignProviderProps> = ({ children }) 
           is_active: campaign.status === 'active',
           image_url: campaign.image,
           category: campaign.category,
-          booking_url: campaign.bookingUrl
+          booking_url: campaign.bookingUrl,
+          wave_color: campaign.waveColor || '#3B82F6'
         })
         .select('*');
 
@@ -135,7 +137,8 @@ export const CampaignProvider: React.FC<CampaignProviderProps> = ({ children }) 
         is_active: updatedCampaign.status === 'active',
         image_url: updatedCampaign.image,
         category: updatedCampaign.category,
-        booking_url: updatedCampaign.bookingUrl
+        booking_url: updatedCampaign.bookingUrl,
+        wave_color: updatedCampaign.waveColor
       };
 
       if (updatedCampaign.startDate && updatedCampaign.endDate) {

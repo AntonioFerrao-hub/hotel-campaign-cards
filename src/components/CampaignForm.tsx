@@ -66,7 +66,8 @@ export const CampaignForm: React.FC<CampaignFormProps> = ({
     duration: '',
     status: 'active' as 'active' | 'inactive',
     category: '',
-    bookingUrl: ''
+    bookingUrl: '',
+    waveColor: '#3B82F6' // Cor padrão azul
   });
   // Fetch categories from database
   const fetchCategories = async () => {
@@ -105,7 +106,8 @@ export const CampaignForm: React.FC<CampaignFormProps> = ({
         duration: campaign.duration,
         status: campaign.status,
         category: campaign.category,
-        bookingUrl: campaign.bookingUrl || ''
+        bookingUrl: campaign.bookingUrl || '',
+        waveColor: campaign.waveColor || '#3B82F6'
       });
     }
   }, [campaign]);
@@ -150,7 +152,8 @@ export const CampaignForm: React.FC<CampaignFormProps> = ({
       category: formData.category,
       location: '', // Não usar valor padrão
       maxGuests: 0, // Não usar valor padrão
-      bookingUrl: formData.bookingUrl
+      bookingUrl: formData.bookingUrl,
+      waveColor: formData.waveColor
     };
 
     try {
@@ -403,6 +406,31 @@ export const CampaignForm: React.FC<CampaignFormProps> = ({
                   </Select>
                 </div>
                 
+              </div>
+
+              {/* Seletor de cor da onda */}
+              <div className="space-y-2">
+                <Label htmlFor="waveColor">Cor da Onda</Label>
+                <div className="flex gap-2 items-center">
+                  <input
+                    type="color"
+                    id="waveColor"
+                    value={formData.waveColor}
+                    onChange={(e) => handleInputChange('waveColor', e.target.value)}
+                    className="w-12 h-10 rounded border border-input cursor-pointer"
+                  />
+                  <Input
+                    type="text"
+                    value={formData.waveColor}
+                    onChange={(e) => handleInputChange('waveColor', e.target.value)}
+                    placeholder="#3B82F6"
+                    className="flex-1 font-mono"
+                    pattern="^#[0-9A-Fa-f]{6}$"
+                  />
+                </div>
+                <p className="text-sm text-muted-foreground">
+                  Escolha a cor da onda que aparecerá no card da campanha
+                </p>
               </div>
 
               {/* Seletor de imagem e upload */}

@@ -170,7 +170,7 @@ export const CampaignCard: React.FC<CampaignCardProps> = ({
       
       {/* Wave SVG conforme HTML original */}
       <svg className="block w-full h-[30px] m-0 p-0" viewBox="0 0 500 50" preserveAspectRatio="none">
-        <path d="M0,30 C150,60 350,0 500,30 L500,00 L0,0 Z" fill="#6e3b8f"></path>
+        <path d="M0,30 C150,60 350,0 500,30 L500,00 L0,0 Z" fill={campaign.waveColor || '#6e3b8f'}></path>
       </svg>
 
       {/* Conteúdo do card com min-height de 180px para flexibilidade */}

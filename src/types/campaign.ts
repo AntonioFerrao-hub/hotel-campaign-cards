@@ -14,6 +14,7 @@ export interface Campaign {
   location: string;
   maxGuests: number;
   bookingUrl?: string;
+  waveColor?: string; // Cor personalizada da onda em formato hexadecimal
 }
 
 export interface User {
