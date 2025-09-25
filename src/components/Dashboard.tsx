@@ -126,14 +126,17 @@ export const Dashboard: React.FC = () => {
             </h3>
           </div>
         ) : filteredCampaigns.length > 0 ? (
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
-            {filteredCampaigns.map(campaign => (
-              <CampaignCard
-                key={campaign.id}
-                campaign={campaign}
-                onEdit={handleEdit}
-              />
-            ))}
+          <div className="w-full">
+            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-5 justify-items-center px-4">
+              {filteredCampaigns.map(campaign => (
+                <CampaignCard
+                  key={campaign.id}
+                  campaign={campaign}
+                  showActions={true}
+                  onEdit={handleEdit}
+                />
+              ))}
+            </div>
           </div>
         ) : (
           <div className="text-center py-12">

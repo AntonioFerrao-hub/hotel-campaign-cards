@@ -112,14 +112,16 @@ export const CampaignCard: React.FC<CampaignCardProps> = ({
   };
 
   return (
-    <Card className="w-full max-w-[280px] bg-white shadow-sm border border-gray-200 rounded-lg overflow-hidden group hover:shadow-md transition-shadow">
-      {/* Imagem */}
-      <div className="relative h-[160px] overflow-hidden">
+    <Card className="w-[360px] h-[450px] bg-white shadow-lg border border-gray-200 rounded-[10px] overflow-hidden group hover:scale-[1.02] hover:shadow-xl transition-all duration-300 flex flex-col flex-shrink-0">
+      {/* Imagem com altura de 180px conforme HTML original */}
+        <div className="relative h-[180px] overflow-hidden">
         <img 
           src={campaign.image} 
           alt={campaign.title}
-          className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300"
+          className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300 brightness-105 contrast-105"
         />
+        {/* Overlay sutil para melhorar contraste */}
+        <div className="absolute inset-0 bg-gradient-to-t from-black/10 via-transparent to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300"></div>
         {showActions && (
           <div className="absolute top-2 right-2 flex gap-1 opacity-0 group-hover:opacity-100 transition-opacity">
             <Button
@@ -159,36 +161,43 @@ export const CampaignCard: React.FC<CampaignCardProps> = ({
         )}
       </div>
       
-      {/* Conteúdo */}
-      <div className="p-4 space-y-3">
-        {/* Título */}
-        <h3 className="font-medium text-gray-900 text-sm leading-tight">
+      {/* Wave SVG conforme HTML original */}
+      <svg className="block w-full h-[30px] m-0 p-0" viewBox="0 0 500 50" preserveAspectRatio="none">
+        <path d="M0,30 C150,60 350,0 500,30 L500,00 L0,0 Z" fill="#6e3b8f"></path>
+      </svg>
+
+      {/* Conteúdo do card com padding de 20px */}
+      <div className="p-5 flex-1 flex flex-col justify-start">
+        {/* Título - 18px conforme HTML original */}
+        <div className="text-lg font-bold mb-2 text-gray-900">
           {campaign.title}
-        </h3>
-        
-        {/* Preço */}
-        <div className="space-y-1">
-          <p className="text-xs text-gray-500 uppercase tracking-wide">
-            A partir de
-          </p>
-          <p className="text-lg font-bold text-gray-900">
-            {formatPrice(campaign.pricePromotional || campaign.priceOriginal)}
-          </p>
-          <p className="text-xs text-gray-600">
-            {campaign.description || 'Diária para dois adultos'}
-          </p>
         </div>
         
-        {/* Data e Duração */}
-        <div className="space-y-2 text-xs text-gray-600">
+        {/* Label "A partir de" - 13px conforme HTML original */}
+        <div className="text-xs text-gray-500 mb-1">
+          A partir de
+        </div>
+        
+        {/* Preço - 24px conforme HTML original */}
+        <div className="text-2xl font-bold text-black mb-1">
+          {formatPrice(campaign.pricePromotional || campaign.priceOriginal)}
+        </div>
+        
+        {/* Subtítulo - 14px conforme HTML original */}
+        <div className="text-sm font-bold mb-4">
+          {campaign.description || 'Diária para dois adultos'}
+        </div>
+        
+        {/* Informações com ícones - 14px conforme HTML original */}
+        <div className="flex flex-col space-y-1">
           {(campaign.startDate && campaign.endDate) && (
-            <div className="flex items-center gap-1">
-              <Calendar className="h-3 w-3" />
+            <div className="flex items-center text-sm text-gray-700">
+              <Calendar className="w-4 h-4 mr-2 fill-gray-600" />
               <span>{formatDate(campaign.startDate)} até {formatDate(campaign.endDate)}</span>
             </div>
           )}
-          <div className="flex items-center gap-1">
-            <Phone className="h-3 w-3" />
+          <div className="flex items-center text-sm text-gray-700">
+            <Phone className="w-4 h-4 mr-2 fill-gray-600" />
             <span>{getDurationText(calculateNights())}</span>
           </div>
         </div>
@@ -197,7 +206,7 @@ export const CampaignCard: React.FC<CampaignCardProps> = ({
         {!showActions && (
           <Button 
             onClick={handleReserve}
-            className="w-full bg-teal-600 hover:bg-teal-700 text-white text-sm py-2 rounded-md"
+            className="w-full bg-orange-500 hover:bg-orange-600 text-white text-sm font-semibold py-2 rounded-lg mt-auto"
           >
             Reserve Já
           </Button>

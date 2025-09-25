@@ -1,0 +1,201 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Pacotes 2025</title>
+  <style>
+    body {
+      font-family: 'Arial', sans-serif;
+      background-color: #f5f5f5;
+      margin: 0;
+      padding: 40px;
+    }
+
+    .container {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 20px;
+      justify-content: center;
+    }
+
+    .card {
+      background-color: #fff;
+      border-radius: 10px;
+      overflow: hidden;
+      box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+      width: 360px;
+      height: 450px;
+      flex-shrink: 0;
+      display: flex;
+      flex-direction: column;
+      transition: transform 0.3s ease, box-shadow 0.3s ease;
+    }
+
+    .card:hover {
+      transform: scale(1.02);
+      box-shadow: 0 8px 20px rgba(0,0,0,0.15);
+    }
+
+    .card img {
+      width: 100%;
+      height: 180px;
+      object-fit: cover;
+    }
+
+    .wave {
+      display: block;
+      width: 100%;
+      height: 30px;
+      margin: 0;
+      padding: 0;
+    }
+
+    .card-content {
+      padding: 20px;
+      flex: 1;
+      display: flex;
+      flex-direction: column;
+      justify-content: flex-start;
+    }
+
+    .title {
+      font-size: 18px;
+      font-weight: bold;
+      margin-bottom: 8px;
+      color: #222;
+    }
+
+    .label {
+      font-size: 13px;
+      color: #777;
+      margin-bottom: 4px;
+    }
+
+    .price {
+      font-size: 24px;
+      font-weight: bold;
+      color: #000;
+      margin-bottom: 5px;
+    }
+
+    .sub {
+      font-size: 14px;
+      font-weight: bold;
+      margin-bottom: 15px;
+    }
+
+    .info {
+      display: flex;
+      align-items: center;
+      font-size: 14px;
+      color: #333;
+      margin-bottom: 5px;
+    }
+
+    .info:last-child {
+      margin-bottom: 0;
+    }
+
+    .info svg {
+      width: 16px;
+      height: 16px;
+      margin-right: 6px;
+      fill: #444;
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    
+    <!-- Setembro 2025 -->
+    <div class="card">
+      <img src="https://images.unsplash.com/photo-1507525428034-b723cf961d3e?q=80&w=800" alt="Setembro">
+      <svg class="wave" viewBox="0 0 500 50" preserveAspectRatio="none">
+        <path d="M0,30 C150,60 350,0 500,30 L500,00 L0,0 Z" style="fill:#6e3b8f;"></path>
+      </svg>
+      <div class="card-content">
+        <div class="title">Setembro 2025</div>
+        <div class="label">A partir de</div>
+        <div class="price">R$ 1.834,00</div>
+        <div class="sub">Diária para dois adultos</div>
+        <div class="info">
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M7 11H9V13H7V11M11 11H13V13H11V11M15 11H17V13H15V11M19 3H18V1H16V3H8V1H6V3H5C3.89 3 3 3.89 3 5V21C3 22.11 3.89 23 5 23H19C20.11 23 21 22.11 21 21V5C21 3.89 20.11 3 19 3M19 21H5V8H19V21Z" /></svg>
+          01/09/2025 até 30/09/2025
+        </div>
+        <div class="info">
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M15.5 14H14L13.1 13H10.9L10 14H8.5L12 7L15.5 14M12 2C6.48 2 2 6.48 2 12S6.48 22 12 22 22 17.52 22 12 17.52 2 12 2Z" /></svg>
+          2 diárias
+        </div>
+      </div>
+    </div>
+
+    <!-- Outubro 2025 -->
+    <div class="card">
+      <img src="https://images.unsplash.com/photo-1593642532400-2682810df593?q=80&w=800" alt="Outubro">
+      <svg class="wave" viewBox="0 0 500 50" preserveAspectRatio="none">
+        <path d="M0,30 C150,60 350,0 500,30 L500,00 L0,0 Z" style="fill:#66a668;"></path>
+      </svg>
+      <div class="card-content">
+        <div class="title">Outubro 2025</div>
+        <div class="label">A partir de</div>
+        <div class="price">R$ 1.834,00</div>
+        <div class="sub">Diária para dois adultos</div>
+        <div class="info">
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M7 11H9V13H7V11M11 11H13V13H11V11M15 11H17V13H15V11M19 3H18V1H16V3H8V1H6V3H5C3.89 3 3 3.89 3 5V21C3 22.11 3.89 23 5 23H19C20.11 23 21 22.11 21 21V5C21 3.89 20.11 3 19 3M19 21H5V8H19V21Z" /></svg>
+          01/10/2025 até 31/10/2025
+        </div>
+        <div class="info">
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M15.5 14H14L13.1 13H10.9L10 14H8.5L12 7L15.5 14M12 2C6.48 2 2 6.48 2 12S6.48 22 12 22 22 17.52 22 12 17.52 2 12 2Z" /></svg>
+          2 diárias
+        </div>
+      </div>
+    </div>
+
+    <!-- Dia das Crianças -->
+    <div class="card">
+      <img src="https://images.unsplash.com/photo-1532330384780-1eec28b7b2e4?q=80&w=800" alt="Dia das Crianças">
+      <svg class="wave" viewBox="0 0 500 50" preserveAspectRatio="none">
+        <path d="M0,30 C150,60 350,0 500,30 L500,00 L0,0 Z" style="fill:#66a668;"></path>
+      </svg>
+      <div class="card-content">
+        <div class="title">Dia das Crianças 2025</div>
+        <div class="label">A partir de</div>
+        <div class="price">R$ 2.568,00</div>
+        <div class="sub">Diária para dois adultos</div>
+        <div class="info">
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M7 11H9V13H7V11M11 11H13V13H11V11M15 11H17V13H15V11M19 3H18V1H16V3H8V1H6V3H5C3.89 3 3 3.89 3 5V21C3 22.11 3.89 23 5 23H19C20.11 23 21 22.11 21 21V5C21 3.89 20.11 3 19 3M19 21H5V8H19V21Z" /></svg>
+          10/10/2025 até 13/10/2025
+        </div>
+        <div class="info">
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M15.5 14H14L13.1 13H10.9L10 14H8.5L12 7L15.5 14M12 2C6.48 2 2 6.48 2 12S6.48 22 12 22 22 17.52 22 12 17.52 2 12 2Z" /></svg>
+          3 diárias
+        </div>
+      </div>
+    </div>
+
+    <!-- Alegria -->
+    <div class="card">
+      <img src="https://images.unsplash.com/photo-1507525428034-b723cf961d3e?q=80&w=800" alt="Alegria">
+      <svg class="wave" viewBox="0 0 500 50" preserveAspectRatio="none">
+        <path d="M0,30 C150,60 350,0 500,30 L500,00 L0,0 Z" style="fill:#7db3ce;"></path>
+      </svg>
+      <div class="card-content">
+        <div class="title">Alegria 2025</div>
+        <div class="label">A partir de</div>
+        <div class="price">R$ 2.571,00</div>
+        <div class="sub">Diária para dois adultos</div>
+        <div class="info">
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M7 11H9V13H7V11M11 11H13V13H11V11M15 11H17V13H15V11M19 3H18V1H16V3H8V1H6V3H5C3.89 3 3 3.89 3 5V21C3 22.11 3.89 23 5 23H19C20.11 23 21 22.11 21 21V5C21 3.89 20.11 3 19 3M19 21H5V8H19V21Z" /></svg>
+          19/10/2025 até 23/10/2025
+        </div>
+        <div class="info">
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M15.5 14H14L13.1 13H10.9L10 14H8.5L12 7L15.5 14M12 2C6.48 2 2 6.48 2 12S6.48 22 12 22 22 17.52 22 12 17.52 2 12 2Z" /></svg>
+          3 diárias
+        </div>
+      </div>
+    </div>
+
+  </div>
+</body>
+</html>
