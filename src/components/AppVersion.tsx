@@ -14,10 +14,10 @@ export const AppVersion: React.FC<AppVersionProps> = ({ className = '' }) => {
     <div className={`flex items-center gap-2 ${className}`}>
       <Badge 
         variant="outline" 
-        className="text-xs bg-gradient-to-r from-[hsl(var(--geometric-blue-light))]/10 to-[hsl(var(--geometric-blue))]/10 border-[hsl(var(--geometric-blue-light))] text-[hsl(var(--geometric-blue))] hover:bg-[hsl(var(--geometric-blue-light))]/20 transition-colors"
+        className="text-xs bg-gradient-to-r from-blue-50 to-blue-100 border-blue-300 text-blue-700 hover:bg-blue-200 transition-colors"
       >
         <GitBranch className="h-3 w-3 mr-1" />
-        {version}
+        v0.2.1
       </Badge>
     </div>
   );

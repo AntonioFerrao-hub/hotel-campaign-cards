@@ -125,25 +125,16 @@ export const CampaignCard: React.FC<CampaignCardProps> = ({
 
   return (
     <Card 
-      className="w-[360px] h-[450px] bg-white shadow-[var(--card-shadow)] border border-gray-200 rounded-[10px] overflow-hidden group hover:scale-[1.02] hover:shadow-[var(--card-hover-shadow)] transition-[var(--transition-smooth)] flex flex-col flex-shrink-0 cursor-pointer relative"
+      className="w-[360px] bg-white shadow-[0_4px_18px_rgba(0,0,0,0.08)] border-0 rounded-[12px] overflow-hidden group hover:scale-[1.02] hover:shadow-[0_6px_24px_rgba(0,0,0,0.12)] transition-[var(--transition-smooth)] flex flex-col flex-shrink-0 cursor-pointer relative"
       onClick={handleReserve}
     >
-      {/* Elementos geométricos decorativos inspirados na imagem */}
-      <div className="absolute top-0 right-0 w-16 h-16 opacity-10 pointer-events-none">
-        <div className="absolute top-2 right-2 w-8 h-8 bg-gradient-to-br from-[hsl(var(--geometric-blue))] to-[hsl(var(--geometric-dark))] rounded transform rotate-45"></div>
-        <div className="absolute top-6 right-6 w-4 h-4 bg-[hsl(var(--geometric-blue-light))] rounded-full"></div>
-      </div>
-      
-      {/* Imagem ajustada para 240px + onda 30px = 270px total */}
-        <div className="relative h-[240px] overflow-hidden">
+      {/* Imagem ajustada para 210px conforme modelo */}
+      <div className="relative h-[210px] overflow-hidden">
         <img 
           src={campaign.image} 
           alt={campaign.title}
-          className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300 brightness-105 contrast-105"
+          className="w-full h-full object-cover block group-hover:scale-105 transition-transform duration-300"
         />
-        {/* Overlay com gradiente geométrico */}
-        <div className="absolute inset-0 bg-gradient-to-t from-black/10 via-transparent to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300"></div>
-        <div className="absolute inset-0 bg-[var(--geometric-gradient)] opacity-0 group-hover:opacity-5 transition-opacity duration-300"></div>
         
         {showActions && (
           <div className="absolute top-2 right-2 flex gap-1 opacity-0 group-hover:opacity-100 transition-opacity">
@@ -188,8 +179,8 @@ export const CampaignCard: React.FC<CampaignCardProps> = ({
         )}
       </div>
       
-      {/* Wave SVG com gradiente geométrico */}
-      <svg className="block w-full h-[30px] m-0 p-0" viewBox="0 0 500 50" preserveAspectRatio="none">
+      {/* Wave SVG - 30px height conforme modelo */}
+      <svg className="block w-full h-[30px]" viewBox="0 0 500 50" preserveAspectRatio="none">
         <defs>
           <linearGradient id={`waveGradient-${campaign.id}`} x1="0%" y1="0%" x2="100%" y2="0%">
             <stop offset="0%" stopColor={campaign.waveColor || 'hsl(var(--geometric-blue))'} />
@@ -199,46 +190,39 @@ export const CampaignCard: React.FC<CampaignCardProps> = ({
         <path d="M0,30 C150,60 350,0 500,30 L500,00 L0,0 Z" fill={`url(#waveGradient-${campaign.id})`}></path>
       </svg>
 
-      {/* Conteúdo do card com min-height de 180px para flexibilidade */}
-      <div className="min-h-[180px] p-4 flex flex-col justify-between overflow-hidden relative">
-        {/* Elemento geométrico sutil no fundo */}
-        <div className="absolute bottom-0 left-0 w-12 h-12 opacity-5 pointer-events-none">
-          <div className="w-full h-full bg-[var(--luxury-gradient)] rounded-tr-full"></div>
+      {/* Conteúdo do card conforme modelo */}
+      <div className="px-[18px] pt-[16px] pb-[18px] flex flex-col">
+        {/* .card-title – Título – 18px – 6px margin-bottom */}
+        <div className="text-[18px] font-bold mb-[6px] text-[#222] leading-[1.2] line-clamp-1" style={{ fontFamily: 'Arial, sans-serif' }}>
+          {campaign.title}
         </div>
         
-        <div className="flex flex-col relative z-10">
-          {/* .title – Setembro 2025 – 18px – 8px margin-bottom */}
-          <div className="text-[18px] font-bold mb-[8px] text-gray-900 leading-tight line-clamp-1">
-            {campaign.title}
-          </div>
-          
-          {/* .label – A partir de – 13px – 2px margin-bottom */}
-          <div className="text-[13px] text-gray-500 mb-[2px]">
-            A partir de
-          </div>
-          
-          {/* .price – R$ 1.834,00 – 24px – 5px margin-bottom com gradiente sutil */}
-          <div className="text-[24px] font-bold bg-gradient-to-r from-[hsl(var(--geometric-blue))] to-[hsl(var(--geometric-dark))] bg-clip-text text-transparent mb-[5px]">
-            {formatPrice(campaign.pricePromotional || campaign.priceOriginal)}
-          </div>
-          
-          {/* .sub – Diária para dois adultos – 14px – 15px margin-bottom */}
-          <div className="text-[14px] font-bold mb-[15px] line-clamp-1">
-            {campaign.description || 'Diária para dois adultos'}
-          </div>
+        {/* .card-label – A partir de – 13px – 2px margin-bottom */}
+        <div className="text-[13px] text-[#888] mb-[2px] leading-[1.4]" style={{ fontFamily: 'Arial, sans-serif' }}>
+          A partir de
         </div>
         
-        {/* Informações com ícones - 14px - fixadas na parte inferior */}
-        <div className="flex flex-col relative z-10">
+        {/* .card-price – R$ 1.834,00 – 24px – 6px margin-bottom */}
+        <div className="text-[24px] font-bold mb-[6px] text-[#000] leading-[1.1]" style={{ fontFamily: 'Arial, sans-serif' }}>
+          {formatPrice(campaign.pricePromotional || campaign.priceOriginal)}
+        </div>
+        
+        {/* .card-sub – Diária para dois adultos – 14px – 12px margin-bottom */}
+        <div className="text-[14px] font-bold mb-[12px] text-[#000] leading-[1.4] line-clamp-1" style={{ fontFamily: 'Arial, sans-serif' }}>
+          {campaign.description || 'Diária para dois adultos'}
+        </div>
+        
+        {/* Informações com ícones - .card-info */}
+        <div className="flex flex-col">
           {(campaign.startDate && campaign.endDate) && (
-            <div className="flex items-center text-[14px] text-gray-700 mb-[4px]">
-              <Calendar className="w-4 h-4 mr-1 fill-[hsl(var(--geometric-blue-light))]" />
+            <div className="flex items-center gap-[6px] text-[#333] text-[14px] leading-[1.4] mb-[6px]" style={{ fontFamily: 'Arial, sans-serif' }}>
+              <Calendar className="w-4 h-4 fill-none stroke-[#444] stroke-[1.5] flex-shrink-0" />
               <span className="truncate">{formatDate(campaign.startDate)} até {formatDate(campaign.endDate)}</span>
             </div>
           )}
-          {/* .info – 2 diárias (último item) – 14px – 0px margin-bottom */}
-          <div className="flex items-center text-[14px] text-gray-700 font-bold mb-[0px]">
-            <Bed className="w-4 h-4 mr-1 fill-[hsl(var(--geometric-blue-light))]" />
+          {/* .card-info último item – 0px margin-bottom */}
+          <div className="flex items-center gap-[6px] text-[#333] text-[14px] leading-[1.4] mb-0" style={{ fontFamily: 'Arial, sans-serif' }}>
+            <Bed className="w-4 h-4 fill-none stroke-[#444] stroke-[1.5] flex-shrink-0" />
             <span className="truncate">{getDurationText(calculateNights())}</span>
           </div>
         </div>

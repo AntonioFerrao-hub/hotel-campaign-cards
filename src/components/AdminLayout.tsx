@@ -3,6 +3,7 @@ import { NavLink, useLocation, useNavigate } from 'react-router-dom';
 import { LayoutDashboard, Camera, Users, LogOut, Tag, Eye } from 'lucide-react';
 import { useAuth } from '@/contexts/AuthContext';
 import { LoginPage } from './LoginPage';
+import { AppVersion } from './AppVersion';
 import {
   Sidebar,
   SidebarContent,
@@ -97,6 +98,9 @@ function AppSidebar() {
           <div className="text-sm">
             <p className="font-medium">{user?.name}</p>
             <p className="text-muted-foreground text-xs">{user?.email}</p>
+          </div>
+          <div className="flex items-center justify-between">
+            <AppVersion />
           </div>
           <Button 
             onClick={logout} 
