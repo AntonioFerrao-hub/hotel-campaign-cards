@@ -3,6 +3,7 @@ import { useCampaigns } from '@/contexts/CampaignContext';
 import { useAuth } from '@/contexts/AuthContext';
 import { CampaignCard } from './CampaignCard';
 import { CampaignForm } from './CampaignForm';
+import { AppVersion } from './AppVersion';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Badge } from '@/components/ui/badge';
@@ -62,7 +63,10 @@ export const Dashboard: React.FC = () => {
           </div>
           <div>
             <h1 className="text-xl font-bold bg-gradient-to-r from-[hsl(var(--geometric-blue))] to-[hsl(var(--geometric-dark))] bg-clip-text text-transparent">CMS Campanhas</h1>
-            <p className="text-sm text-muted-foreground">Bem-vindo, {user?.name}</p>
+            <div className="flex items-center gap-2">
+              <p className="text-sm text-muted-foreground">Bem-vindo, {user?.name}</p>
+              <AppVersion />
+            </div>
           </div>
         </div>
         <Button variant="outline" onClick={logout} className="gap-2 hover:bg-[hsl(var(--geometric-blue-light))]/10 transition-colors">
