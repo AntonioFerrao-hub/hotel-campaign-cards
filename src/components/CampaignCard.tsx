@@ -203,8 +203,15 @@ export const CampaignCard: React.FC<CampaignCardProps> = ({
         </div>
         
         {/* .card-price – R$ 1.834,00 – 24px – 6px margin-bottom */}
-        <div className="text-[24px] font-bold mb-[6px] text-[#000] leading-[1.1]" style={{ fontFamily: 'Arial, sans-serif' }}>
-          {formatPrice(campaign.pricePromotional || campaign.priceOriginal)}
+        <div className="text-[24px] font-bold mb-[6px] text-[#000] leading-[1.1] flex items-center gap-2" style={{ fontFamily: 'Arial, sans-serif' }}>
+          {campaign.pricePromotional && campaign.pricePromotional > 0 && campaign.pricePromotional < campaign.priceOriginal ? (
+            <>
+              <span className="line-through text-gray-500">{formatPrice(campaign.priceOriginal)}</span>
+              <span>{formatPrice(campaign.pricePromotional)}</span>
+            </>
+          ) : (
+            <span>{formatPrice(campaign.priceOriginal)}</span>
+          )}
         </div>
         
         {/* .card-sub – Diária para dois adultos – 14px – 12px margin-bottom */}
