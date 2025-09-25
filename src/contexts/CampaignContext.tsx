@@ -112,10 +112,8 @@ export const CampaignProvider: React.FC<CampaignProviderProps> = ({ children }) 
         throw error;
       }
 
-      // Força recarregamento das campanhas após a inserção
-      setTimeout(async () => {
-        await fetchCampaigns();
-      }, 100);
+      // Recarrega as campanhas imediatamente após a inserção
+      await fetchCampaigns();
       
     } catch (error) {
       console.error('Erro ao adicionar campanha:', error);
@@ -161,10 +159,8 @@ export const CampaignProvider: React.FC<CampaignProviderProps> = ({ children }) 
         throw error;
       }
 
-      // Força recarregamento das campanhas após a atualização
-      setTimeout(async () => {
-        await fetchCampaigns();
-      }, 100);
+      // Recarrega as campanhas imediatamente após a atualização
+      await fetchCampaigns();
       
     } catch (error) {
       console.error('Erro ao atualizar campanha:', error);

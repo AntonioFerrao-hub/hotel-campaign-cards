@@ -8,43 +8,47 @@ All colors MUST be HSL.
 
 @layer base {
   :root {
-    --background: 206 100% 97%;
-    --foreground: 201 82% 12%;
+    --background: 220 14% 96%;
+    --foreground: 220 84% 12%;
 
     --card: 0 0% 100%;
-    --card-foreground: 201 82% 12%;
+    --card-foreground: 220 84% 12%;
 
     --popover: 0 0% 100%;
-    --popover-foreground: 201 82% 12%;
+    --popover-foreground: 220 84% 12%;
 
-    --primary: 193 82% 31%;
+    --primary: 221 83% 53%;
     --primary-foreground: 0 0% 100%;
 
-    --secondary: 45 93% 47%;
-    --secondary-foreground: 201 82% 12%;
+    --secondary: 217 91% 60%;
+    --secondary-foreground: 220 84% 12%;
 
-    --muted: 196 23% 93%;
-    --muted-foreground: 201 30% 45%;
+    --muted: 220 14% 93%;
+    --muted-foreground: 220 30% 45%;
 
-    --accent: 196 64% 87%;
-    --accent-foreground: 201 82% 12%;
+    --accent: 217 32% 17%;
+    --accent-foreground: 0 0% 100%;
 
     --destructive: 0 84.2% 60.2%;
     --destructive-foreground: 210 40% 98%;
 
-    --border: 196 23% 87%;
-    --input: 196 23% 87%;
-    --ring: 193 82% 31%;
+    --border: 220 14% 87%;
+    --input: 220 14% 87%;
+    --ring: 221 83% 53%;
 
-    /* Hotel Campaign Design System */
-    --ocean-primary: 193 82% 31%;
-    --ocean-light: 196 64% 87%;
-    --ocean-dark: 201 82% 12%;
+    /* Hotel Campaign Design System - Inspired by geometric blue design */
+    --ocean-primary: 221 83% 53%;
+    --ocean-light: 217 91% 60%;
+    --ocean-dark: 217 32% 17%;
     --gold-accent: 45 93% 47%;
     --gold-light: 48 100% 88%;
-    --luxury-gradient: linear-gradient(135deg, hsl(193 82% 31%), hsl(196 64% 87%));
-    --card-shadow: 0 4px 20px -4px hsl(193 82% 31% / 0.15);
-    --card-hover-shadow: 0 10px 40px -4px hsl(193 82% 31% / 0.25);
+    --geometric-blue: 221 83% 53%;
+    --geometric-blue-light: 217 91% 60%;
+    --geometric-dark: 217 32% 17%;
+    --luxury-gradient: linear-gradient(135deg, hsl(221 83% 53%), hsl(217 91% 60%));
+    --geometric-gradient: linear-gradient(45deg, hsl(221 83% 53%), hsl(217 32% 17%));
+    --card-shadow: 0 4px 20px -4px hsl(221 83% 53% / 0.15);
+    --card-hover-shadow: 0 10px 40px -4px hsl(221 83% 53% / 0.25);
     --transition-smooth: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
 
     --radius: 0.5rem;

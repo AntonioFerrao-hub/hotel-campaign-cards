@@ -114,17 +114,48 @@ export const CampaignForm: React.FC<CampaignFormProps> = ({
 
   // Calculate duration automatically when dates change
   useEffect(() => {
-    if (formData.startDate && formData.endDate) {
+    const calculateDuration = () => {
+      if (!formData.startDate || !formData.endDate) {
+        setFormData(prev => ({ ...prev, duration: '' }));
+        return;
+      }
+
       const startDate = new Date(formData.startDate);
       const endDate = new Date(formData.endDate);
-      const diffTime = endDate.getTime() - startDate.getTime();
-      const diffDays = Math.ceil(diffTime / (1000 * 60 * 60 * 24));
-      
-      if (diffDays > 0) {
-        const duration = diffDays === 1 ? '1 diária' : `${diffDays} diárias`;
-        setFormData(prev => ({ ...prev, duration }));
+
+      // Validate dates
+      if (isNaN(startDate.getTime()) || isNaN(endDate.getTime())) {
+        setFormData(prev => ({ ...prev, duration: 'Datas inválidas' }));
+        return;
       }
-    }
+
+      // Check if end date is before start date
+      if (endDate < startDate) {
+        setFormData(prev => ({ ...prev, duration: 'Data fim deve ser posterior à data início' }));
+        return;
+      }
+
+      // Calculate the difference in days
+      const diffTime = endDate.getTime() - startDate.getTime();
+      const diffDays = Math.ceil(diffTime / (1000 * 60 * 60 * 24)) + 1; // +1 to include both start and end days
+
+      if (diffDays <= 0) {
+        setFormData(prev => ({ ...prev, duration: 'Período inválido' }));
+        return;
+      }
+
+      // Format duration text
+      let duration;
+      if (diffDays === 1) {
+        duration = '1 diária';
+      } else {
+        duration = `${diffDays} diárias`;
+      }
+
+      setFormData(prev => ({ ...prev, duration }));
+    };
+
+    calculateDuration();
   }, [formData.startDate, formData.endDate]);
 
   const parseCurrency = (value: string) => {
@@ -202,11 +233,11 @@ export const CampaignForm: React.FC<CampaignFormProps> = ({
       return;
     }
 
-    // Validate file size (max 5MB)
-    if (file.size > 5 * 1024 * 1024) {
+    // Validate file size (max 1MB)
+    if (file.size > 1 * 1024 * 1024) {
       toast({
         title: "Erro",
-        description: "A imagem deve ter no máximo 5MB.",
+        description: "A imagem deve ter no máximo 1MB.",
         variant: "destructive"
       });
       return;
@@ -455,6 +486,9 @@ export const CampaignForm: React.FC<CampaignFormProps> = ({
                       {isUploading ? 'Enviando...' : 'Upload Nova Imagem'}
                     </label>
                   </div>
+                  <p className="text-xs text-muted-foreground">
+                    Tamanho máximo: 1MB. Formatos aceitos: JPG, PNG, GIF, WebP
+                  </p>
 
                   {/* Imagens predefinidas */}
                   <div className="space-y-2">

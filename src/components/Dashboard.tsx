@@ -46,26 +46,33 @@ export const Dashboard: React.FC = () => {
   }
 
   return (
-    <div className="min-h-screen bg-background">
+    <div className="min-h-screen bg-background relative overflow-hidden">
+      {/* Elementos geométricos de fundo inspirados na imagem */}
+      <div className="absolute top-0 right-0 w-64 h-64 opacity-5 pointer-events-none">
+        <div className="absolute top-8 right-8 w-32 h-32 bg-[var(--luxury-gradient)] rounded transform rotate-12"></div>
+        <div className="absolute top-16 right-16 w-16 h-16 bg-[hsl(var(--geometric-blue-light))] rounded-full"></div>
+        <div className="absolute top-24 right-24 w-8 h-8 bg-[hsl(var(--geometric-dark))] rounded transform rotate-45"></div>
+      </div>
+      
       {/* Header */}
-      <header className="border-b border-border bg-card shadow-sm container mx-auto px-4 py-4 flex items-center justify-between">
+      <header className="border-b border-border bg-card shadow-sm container mx-auto px-4 py-4 flex items-center justify-between relative z-10">
         <div className="flex items-center gap-3">
-          <div className="h-10 w-10 rounded-full bg-ocean-primary flex items-center justify-center">
+          <div className="h-10 w-10 rounded-full bg-[var(--luxury-gradient)] flex items-center justify-center shadow-lg">
             <Hotel className="h-5 w-5 text-primary-foreground" />
           </div>
           <div>
-            <h1 className="text-xl font-bold text-card-foreground">CMS Campanhas</h1>
+            <h1 className="text-xl font-bold bg-gradient-to-r from-[hsl(var(--geometric-blue))] to-[hsl(var(--geometric-dark))] bg-clip-text text-transparent">CMS Campanhas</h1>
             <p className="text-sm text-muted-foreground">Bem-vindo, {user?.name}</p>
           </div>
         </div>
-        <Button variant="outline" onClick={logout} className="gap-2">
+        <Button variant="outline" onClick={logout} className="gap-2 hover:bg-[hsl(var(--geometric-blue-light))]/10 transition-colors">
           <LogOut className="h-4 w-4" />
           Sair
         </Button>
       </header>
 
       {/* Main Content */}
-      <main className="container mx-auto px-4 py-8">
+      <main className="container mx-auto px-4 py-8 relative z-10">
         {/* Controls */}
         <div className="mb-8 space-y-4">
           <div className="flex flex-col sm:flex-row gap-4 items-start sm:items-center justify-between">
@@ -77,7 +84,7 @@ export const Dashboard: React.FC = () => {
             </p>
             <Button 
               onClick={() => setShowForm(true)}
-              className="bg-ocean-primary hover:bg-ocean-dark gap-2"
+              className="bg-[var(--luxury-gradient)] hover:opacity-90 gap-2 shadow-[var(--card-shadow)] transition-all duration-300 hover:shadow-[var(--card-hover-shadow)]"
             >
               <Plus className="h-4 w-4" />
               Nova Campanha
@@ -87,7 +94,7 @@ export const Dashboard: React.FC = () => {
           {/* Search and Filters */}
           <div className="flex flex-col sm:flex-row gap-4">
             <div className="relative flex-1">
-              <Search className="absolute left-3 top-3 h-4 w-4 text-muted-foreground" />
+              <Search className="absolute left-3 top-3 h-4 w-4 text-[hsl(var(--geometric-blue-light))]" />
               <Input
                 placeholder="Buscar campanhas..."
                 value={searchTerm}
