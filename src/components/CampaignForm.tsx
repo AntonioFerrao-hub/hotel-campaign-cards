@@ -137,7 +137,7 @@ export const CampaignForm: React.FC<CampaignFormProps> = ({
 
       // Calculate the difference in days
       const diffTime = endDate.getTime() - startDate.getTime();
-      const diffDays = Math.ceil(diffTime / (1000 * 60 * 60 * 24)) + 1; // +1 to include both start and end days
+      const diffDays = Math.ceil(diffTime / (1000 * 60 * 60 * 24)); // Número de noites (sem +1)
 
       if (diffDays <= 0) {
         setFormData(prev => ({ ...prev, duration: 'Período inválido' }));

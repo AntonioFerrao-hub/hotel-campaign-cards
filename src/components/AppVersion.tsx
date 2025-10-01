@@ -17,7 +17,7 @@ export const AppVersion: React.FC<AppVersionProps> = ({ className = '' }) => {
         className="text-xs bg-gradient-to-r from-blue-50 to-blue-100 border-blue-300 text-blue-700 hover:bg-blue-200 transition-colors"
       >
         <GitBranch className="h-3 w-3 mr-1" />
-        v0.2.3
+        v0.2.4
       </Badge>
     </div>
   );

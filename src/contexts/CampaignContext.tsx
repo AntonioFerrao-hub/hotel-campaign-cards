@@ -83,7 +83,7 @@ export const CampaignProvider: React.FC<CampaignProviderProps> = ({ children }) 
         const startDate = new Date(campaign.startDate);
         const endDate = new Date(campaign.endDate);
         const diffTime = endDate.getTime() - startDate.getTime();
-        const diffDays = Math.ceil(diffTime / (1000 * 60 * 60 * 24));
+        const diffDays = Math.ceil(diffTime / (1000 * 60 * 60 * 24)); // Número de noites (sem +1)
         if (diffDays > 0) {
           durationNights = diffDays;
         }
@@ -143,7 +143,7 @@ export const CampaignProvider: React.FC<CampaignProviderProps> = ({ children }) 
         const startDate = new Date(updatedCampaign.startDate);
         const endDate = new Date(updatedCampaign.endDate);
         const diffTime = endDate.getTime() - startDate.getTime();
-        const diffDays = Math.ceil(diffTime / (1000 * 60 * 60 * 24));
+        const diffDays = Math.ceil(diffTime / (1000 * 60 * 60 * 24)); // Número de noites (sem +1)
         if (diffDays > 0) {
           updateData.duration_nights = diffDays;
         }

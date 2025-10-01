@@ -119,7 +119,7 @@ export const CampaignCard: React.FC<CampaignCardProps> = ({
     if (isNaN(start.getTime()) || isNaN(end.getTime())) return 2;
     
     const diffTime = end.getTime() - start.getTime();
-    const diffDays = Math.ceil(diffTime / (1000 * 60 * 60 * 24)) + 1; // +1 para incluir ambos os dias
+    const diffDays = Math.ceil(diffTime / (1000 * 60 * 60 * 24)); // Número de noites (sem +1)
     return diffDays > 0 ? diffDays : 2;
   };
 
