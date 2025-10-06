@@ -6,18 +6,51 @@ import { Input } from '@/components/ui/input';
 import { Badge } from '@/components/ui/badge';
 import { Search, Filter, Hotel } from 'lucide-react';
 import { CampaignCard } from '@/components/CampaignCard';
+import { supabase } from '@/integrations/supabase/client';
+
+interface Category {
+  id: string;
+  name: string;
+  display_order: number;
+}
 
 export const Gallery: React.FC = () => {
   const { campaigns } = useCampaigns();
   const [searchParams, setSearchParams] = useSearchParams();
   const [searchTerm, setSearchTerm] = useState('');
   const [selectedCategory, setSelectedCategory] = useState<string>('');
+  const [orderedCategories, setOrderedCategories] = useState<Category[]>([]);
 
-  // Get all unique categories from both single category field and categories array
-  const categories = Array.from(new Set([
-    ...campaigns.map(c => c.category).filter(Boolean),
-    ...campaigns.flatMap(c => c.categories?.map(cat => cat.name) || [])
-  ]));
+  // Fetch categories with custom ordering
+  const fetchOrderedCategories = async () => {
+    try {
+      const { data, error } = await supabase
+        .from('categories')
+        .select('id, name, display_order')
+        .order('display_order');
+
+      if (error) {
+        console.error('Erro ao buscar categorias:', error);
+        return;
+      }
+
+      setOrderedCategories(data || []);
+    } catch (error) {
+      console.error('Erro inesperado ao buscar categorias:', error);
+    }
+  };
+
+  useEffect(() => {
+    fetchOrderedCategories();
+  }, []);
+
+  // Get all unique categories from campaigns that exist in our ordered categories
+  const availableCategories = orderedCategories.filter(category => 
+    campaigns.some(campaign => 
+      campaign.category === category.name || 
+      (campaign.categories && campaign.categories.some(cat => cat.name === category.name))
+    )
+  );
 
   // Sincronizar com parâmetros de URL
   useEffect(() => {
@@ -86,14 +119,14 @@ export const Gallery: React.FC = () => {
             >
               Todas
             </Badge>
-            {categories.map(category => (
+            {availableCategories.map(category => (
               <Badge 
-                key={category} 
-                variant={selectedCategory === category ? 'default' : 'outline'} 
+                key={category.id} 
+                variant={selectedCategory === category.name ? 'default' : 'outline'} 
                 className="cursor-pointer" 
-                onClick={() => handleCategoryChange(category)}
+                onClick={() => handleCategoryChange(category.name)}
               >
-                {category}
+                {category.name}
               </Badge>
             ))}
           </div>

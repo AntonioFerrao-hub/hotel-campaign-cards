@@ -6,7 +6,7 @@ import { Card, CardHeader, CardContent, CardTitle } from '@/components/ui/card';
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from '@/components/ui/dialog';
 import { AlertDialog, AlertDialogAction, AlertDialogCancel, AlertDialogContent, AlertDialogDescription, AlertDialogFooter, AlertDialogHeader, AlertDialogTitle, AlertDialogTrigger } from '@/components/ui/alert-dialog';
 import { Badge } from '@/components/ui/badge';
-import { Plus, Edit, Trash2 } from 'lucide-react';
+import { Plus, Edit, Trash2, ChevronUp, ChevronDown } from 'lucide-react';
 import { useToast } from '@/hooks/use-toast';
 import { supabase } from '@/integrations/supabase/client';
 
@@ -14,6 +14,7 @@ interface Category {
   id: string;
   name: string;
   description?: string;
+  display_order: number;
 }
 
 export const CategoryManagement: React.FC = () => {
@@ -45,7 +46,7 @@ export const CategoryManagement: React.FC = () => {
       const { data, error } = await supabase
         .from('categories')
         .select('*')
-        .order('name');
+        .order('display_order');
 
       if (error) {
         console.error('Erro ao buscar categorias:', error);
@@ -80,12 +81,24 @@ export const CategoryManagement: React.FC = () => {
     }
 
     try {
+      // Get the next display_order value
+      const { data: maxOrderData } = await supabase
+        .from('categories')
+        .select('display_order')
+        .order('display_order', { ascending: false })
+        .limit(1);
+
+      const nextOrder = maxOrderData && maxOrderData.length > 0 
+        ? maxOrderData[0].display_order + 1 
+        : 0;
+
       const { error } = await supabase
         .from('categories')
         .insert({
           name: formData.name.trim(),
           slug: generateSlug(formData.name.trim()),
-          description: formData.description.trim() || null
+          description: formData.description.trim() || null,
+          display_order: nextOrder
         });
 
       if (error) {
@@ -161,13 +174,81 @@ export const CategoryManagement: React.FC = () => {
       
       toast({
         title: "Sucesso",
-        description: "Categoria removida com sucesso!"
+        description: "Categoria excluída com sucesso!"
       });
     } catch (error) {
-      console.error('Erro ao deletar categoria:', error);
+      console.error('Erro ao excluir categoria:', error);
       toast({
         title: "Erro",
-        description: "Erro ao remover categoria.",
+        description: "Erro ao excluir categoria.",
+        variant: "destructive"
+      });
+    }
+  };
+
+  const handleMoveUp = async (category: Category) => {
+    const currentIndex = categories.findIndex(c => c.id === category.id);
+    if (currentIndex <= 0) return;
+
+    const previousCategory = categories[currentIndex - 1];
+    
+    try {
+      // Swap display_order values
+      await supabase
+        .from('categories')
+        .update({ display_order: previousCategory.display_order })
+        .eq('id', category.id);
+
+      await supabase
+        .from('categories')
+        .update({ display_order: category.display_order })
+        .eq('id', previousCategory.id);
+
+      await fetchCategories();
+      
+      toast({
+        title: "Sucesso",
+        description: "Categoria movida para cima!"
+      });
+    } catch (error) {
+      console.error('Erro ao mover categoria:', error);
+      toast({
+        title: "Erro",
+        description: "Erro ao mover categoria.",
+        variant: "destructive"
+      });
+    }
+  };
+
+  const handleMoveDown = async (category: Category) => {
+    const currentIndex = categories.findIndex(c => c.id === category.id);
+    if (currentIndex >= categories.length - 1) return;
+
+    const nextCategory = categories[currentIndex + 1];
+    
+    try {
+      // Swap display_order values
+      await supabase
+        .from('categories')
+        .update({ display_order: nextCategory.display_order })
+        .eq('id', category.id);
+
+      await supabase
+        .from('categories')
+        .update({ display_order: category.display_order })
+        .eq('id', nextCategory.id);
+
+      await fetchCategories();
+      
+      toast({
+        title: "Sucesso",
+        description: "Categoria movida para baixo!"
+      });
+    } catch (error) {
+      console.error('Erro ao mover categoria:', error);
+      toast({
+        title: "Erro",
+        description: "Erro ao mover categoria.",
         variant: "destructive"
       });
     }
@@ -271,14 +352,35 @@ export const CategoryManagement: React.FC = () => {
                   <Button
                     variant="outline"
                     size="sm"
+                    onClick={() => handleMoveUp(category)}
+                    disabled={categories.findIndex(c => c.id === category.id) === 0}
+                    title="Mover para cima"
+                  >
+                    <ChevronUp className="h-4 w-4" />
+                  </Button>
+                  
+                  <Button
+                    variant="outline"
+                    size="sm"
+                    onClick={() => handleMoveDown(category)}
+                    disabled={categories.findIndex(c => c.id === category.id) === categories.length - 1}
+                    title="Mover para baixo"
+                  >
+                    <ChevronDown className="h-4 w-4" />
+                  </Button>
+                  
+                  <Button
+                    variant="outline"
+                    size="sm"
                     onClick={() => openEditDialog(category)}
+                    title="Editar categoria"
                   >
                     <Edit className="h-4 w-4" />
                   </Button>
                   
                   <AlertDialog>
                     <AlertDialogTrigger asChild>
-                      <Button variant="outline" size="sm">
+                      <Button variant="outline" size="sm" title="Excluir categoria">
                         <Trash2 className="h-4 w-4" />
                       </Button>
                     </AlertDialogTrigger>
