@@ -3,6 +3,9 @@ import react from "@vitejs/plugin-react-swc";
 import path from "path";
 import { componentTagger } from "lovable-tagger";
 
+// Read package.json to get version
+import packageJson from './package.json';
+
 // https://vitejs.dev/config/
 export default defineConfig(({ mode }) => ({
   server: {
@@ -16,6 +19,6 @@ export default defineConfig(({ mode }) => ({
     },
   },
   define: {
-    'import.meta.env.VITE_APP_VERSION': JSON.stringify(process.env.npm_package_version || '0.2.0')
+    'import.meta.env.VITE_APP_VERSION': JSON.stringify(`v${packageJson.version}`)
   }
 }));
