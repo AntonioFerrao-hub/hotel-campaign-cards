@@ -107,7 +107,7 @@ export const LoginPage: React.FC = () => {
             
             <Button 
               type="submit" 
-              className="w-full h-12 bg-[hsl(var(--geometric-blue))] hover:bg-[hsl(var(--geometric-blue-light))] text-white shadow-[var(--card-shadow)] transition-all duration-300 hover:shadow-[var(--card-hover-shadow)] text-lg font-medium" 
+              className="w-full h-12 text-lg font-medium" 
               disabled={isLoading}
             >
               {isLoading && <Loader2 className="mr-2 h-5 w-5 animate-spin" />}

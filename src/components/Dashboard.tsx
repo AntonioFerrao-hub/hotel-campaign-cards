@@ -88,7 +88,7 @@ export const Dashboard: React.FC = () => {
             </p>
             <Button 
               onClick={() => setShowForm(true)}
-              className="bg-[var(--luxury-gradient)] hover:opacity-90 gap-2 shadow-[var(--card-shadow)] transition-all duration-300 hover:shadow-[var(--card-hover-shadow)]"
+              className="gap-2"
             >
               <Plus className="h-4 w-4" />
               Nova Campanha

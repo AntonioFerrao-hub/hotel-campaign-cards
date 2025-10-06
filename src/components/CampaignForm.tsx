@@ -529,7 +529,7 @@ export const CampaignForm: React.FC<CampaignFormProps> = ({
               </div>
 
               <div className="flex gap-4 pt-4">
-                <Button type="submit" disabled={isLoading} className="bg-ocean-primary hover:bg-ocean-dark gap-2 flex-1">
+                <Button type="submit" disabled={isLoading} className="gap-2 flex-1">
                   <Save className="h-4 w-4" />
                   {isLoading ? 'Salvando...' : campaign ? 'Atualizar' : 'Criar'} Campanha
                 </Button>

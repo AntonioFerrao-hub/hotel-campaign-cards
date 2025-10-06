@@ -84,7 +84,7 @@ export const LoginForm: React.FC = () => {
             </div>
             <Button 
               type="submit" 
-              className="w-full bg-ocean-primary hover:bg-ocean-dark"
+              className="w-full"
               disabled={isLoading}
             >
               {isLoading ? 'Entrando...' : 'Entrar'}
