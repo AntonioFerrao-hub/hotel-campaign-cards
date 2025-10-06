@@ -1,22 +1,18 @@
 import React, { useState, useEffect } from 'react';
 import InputMask from 'react-input-mask';
 import { useCampaigns } from '@/contexts/CampaignContext';
-import { Campaign } from '@/types/campaign';
+import { Campaign, Category } from '@/types/campaign';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { Textarea } from '@/components/ui/textarea';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { Card, CardHeader, CardContent, CardTitle } from '@/components/ui/card';
+import { Badge } from '@/components/ui/badge';
+import { MultiSelect } from '@/components/ui/multi-select';
 import { ArrowLeft, Save, Upload, X, ExternalLink } from 'lucide-react';
 import { useToast } from '@/hooks/use-toast';
 import { supabase } from '@/integrations/supabase/client';
-
-interface Category {
-  id: string;
-  name: string;
-  description?: string;
-}
 
 // Import campaign images
 import resortSunset from '@/assets/resort-sunset.jpg';
@@ -54,6 +50,7 @@ export const CampaignForm: React.FC<CampaignFormProps> = ({
   const [isLoading, setIsLoading] = useState(false);
   const [isUploading, setIsUploading] = useState(false);
   const [categories, setCategories] = useState<Category[]>([]);
+  const [selectedCategories, setSelectedCategories] = useState<Category[]>([]);
   const [formData, setFormData] = useState({
     title: '',
     description: '',
@@ -65,7 +62,6 @@ export const CampaignForm: React.FC<CampaignFormProps> = ({
     endDate: '',
     duration: '',
     status: 'active' as 'active' | 'inactive',
-    category: '',
     bookingUrl: '',
     waveColor: '#3B82F6' // Cor padrão azul
   });
@@ -105,10 +101,14 @@ export const CampaignForm: React.FC<CampaignFormProps> = ({
         endDate: campaign.endDate,
         duration: campaign.duration,
         status: campaign.status,
-        category: campaign.category,
         bookingUrl: campaign.bookingUrl || '',
         waveColor: campaign.waveColor || '#3B82F6'
       });
+      
+      // Set selected categories if available
+      if (campaign.categories) {
+        setSelectedCategories(campaign.categories);
+      }
     }
   }, [campaign]);
 
@@ -158,6 +158,36 @@ export const CampaignForm: React.FC<CampaignFormProps> = ({
     calculateDuration();
   }, [formData.startDate, formData.endDate]);
 
+  // Save campaign categories to junction table
+  const saveCampaignCategories = async (campaignId: string) => {
+    try {
+      // First, delete existing associations
+      await supabase
+        .from('campaign_categories')
+        .delete()
+        .eq('campaign_id', campaignId);
+
+      // Then, insert new associations
+      if (selectedCategories.length > 0) {
+        const associations = selectedCategories.map(category => ({
+          campaign_id: campaignId,
+          category_id: category.id
+        }));
+
+        const { error } = await supabase
+          .from('campaign_categories')
+          .insert(associations);
+
+        if (error) {
+          throw error;
+        }
+      }
+    } catch (error) {
+      console.error('Error saving campaign categories:', error);
+      throw error;
+    }
+  };
+
   const parseCurrency = (value: string) => {
     if (!value) return 0;
     const normalized = value.replace(/\./g, '').replace(',', '.');
@@ -180,29 +210,38 @@ export const CampaignForm: React.FC<CampaignFormProps> = ({
       endDate: formData.endDate,
       duration: formData.duration,
       status: formData.status,
-      category: formData.category,
       location: '', // Não usar valor padrão
       maxGuests: 0, // Não usar valor padrão
       bookingUrl: formData.bookingUrl,
-      waveColor: formData.waveColor
+      waveColor: formData.waveColor,
+      categories: selectedCategories
     };
 
     try {
+      let campaignId: string;
+      
       if (campaign) {
         await updateCampaign(campaign.id, campaignData);
+        campaignId = campaign.id;
         toast({
           title: "Campanha atualizada!",
           description: `A campanha "${formData.title}" foi atualizada com sucesso.`
         });
       } else {
-        await addCampaign(campaignData);
+        const newCampaign = await addCampaign(campaignData);
+        campaignId = newCampaign.id;
         toast({
           title: "Campanha criada!",
           description: `A campanha "${formData.title}" foi criada com sucesso.`
         });
       }
+
+      // Save campaign categories to junction table
+      await saveCampaignCategories(campaignId);
+      
       onClose();
     } catch (error) {
+      console.error('Error saving campaign:', error);
       toast({
         title: "Erro",
         description: "Ocorreu um erro ao salvar a campanha.",
@@ -293,26 +332,22 @@ export const CampaignForm: React.FC<CampaignFormProps> = ({
           </CardHeader>
           <CardContent>
             <form onSubmit={handleSubmit} className="space-y-6">
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+              <div className="space-y-4">
                 <div className="space-y-2">
                   <Label htmlFor="title">Título da Campanha</Label>
                   <Input id="title" value={formData.title} onChange={e => handleInputChange('title', e.target.value)} placeholder="Ex: Setembro 2025" required />
                 </div>
-                 <div className="space-y-2">
-                   <Label htmlFor="category">Categoria</Label>
-                   <Select value={formData.category || ""} onValueChange={value => handleInputChange('category', value)}>
-                     <SelectTrigger>
-                       <SelectValue placeholder="Selecione uma categoria" />
-                     </SelectTrigger>
-                     <SelectContent>
-                       {categories.map((category) => (
-                         <SelectItem key={category.id} value={category.name}>
-                           {category.name}
-                         </SelectItem>
-                       ))}
-                     </SelectContent>
-                   </Select>
-                 </div>
+                
+                <div className="space-y-2">
+                  <MultiSelect
+                    label="Categorias"
+                    options={categories}
+                    selected={selectedCategories}
+                    onChange={setSelectedCategories}
+                    placeholder="Selecione as categorias da campanha..."
+                    searchPlaceholder="Buscar categorias..."
+                  />
+                </div>
               </div>
 
               <div className="space-y-2">

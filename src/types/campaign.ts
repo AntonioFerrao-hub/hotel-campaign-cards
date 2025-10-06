@@ -1,3 +1,9 @@
+export interface Category {
+  id: string;
+  name: string;
+  description?: string;
+}
+
 export interface Campaign {
   id: string;
   title: string;
@@ -10,7 +16,8 @@ export interface Campaign {
   endDate: string;
   duration: string;
   status: 'active' | 'inactive';
-  category: string;
+  category: string; // Mantido para compatibilidade
+  categories?: Category[]; // Nova propriedade para múltiplas categorias
   location: string;
   maxGuests: number;
   bookingUrl?: string;

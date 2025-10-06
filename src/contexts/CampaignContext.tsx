@@ -1,10 +1,10 @@
 import React, { createContext, useContext, useState, useEffect, ReactNode } from 'react';
-import { Campaign } from '@/types/campaign';
+import { Campaign, Category } from '@/types/campaign';
 import { supabase } from '@/integrations/supabase/client';
 
 interface CampaignContextType {
   campaigns: Campaign[];
-  addCampaign: (campaign: Omit<Campaign, 'id'>) => Promise<void>;
+  addCampaign: (campaign: Omit<Campaign, 'id'>) => Promise<Campaign>;
   updateCampaign: (id: string, campaign: Partial<Campaign>) => Promise<void>;
   deleteCampaign: (id: string) => void;
   getCampaign: (id: string) => Campaign | undefined;
@@ -30,6 +30,31 @@ export const CampaignProvider: React.FC<CampaignProviderProps> = ({ children }) 
   const [campaigns, setCampaigns] = useState<Campaign[]>([]);
   const [loading, setLoading] = useState(true);
 
+  const fetchCampaignCategories = async (campaignId: string): Promise<Category[]> => {
+    try {
+      const { data, error } = await supabase
+        .from('campaign_categories')
+        .select(`
+          categories (
+            id,
+            name,
+            description
+          )
+        `)
+        .eq('campaign_id', campaignId);
+
+      if (error) {
+        console.error('Error fetching campaign categories:', error);
+        return [];
+      }
+
+      return (data || []).map((item: any) => item.categories).filter(Boolean);
+    } catch (error) {
+      console.error('Unexpected error fetching campaign categories:', error);
+      return [];
+    }
+  };
+
   const fetchCampaigns = async () => {
     try {
       setLoading(true);
@@ -43,25 +68,32 @@ export const CampaignProvider: React.FC<CampaignProviderProps> = ({ children }) 
         return;
       }
 
-      // Mapear dados do Supabase para o formato esperado
-      const mappedCampaigns: Campaign[] = (data || []).map(campaign => ({
-        id: campaign.id,
-        title: campaign.title,
-        description: campaign.description || 'Diária para dois adultos',
-        priceOriginal: campaign.price_original || 0,
-        pricePromotional: campaign.price_promotional || 0,
-        priceLabel: campaign.price_label || 'A partir de',
-        image: campaign.image_url || '/placeholder.svg',
-        startDate: campaign.start_date || '',
-        endDate: campaign.end_date || '',
-        duration: campaign.duration_nights ? `${campaign.duration_nights} diárias` : '2 diárias',
-        status: campaign.is_active ? 'active' : 'inactive',
-        category: campaign.category || '',
-        location: '',
-        maxGuests: 0,
-        bookingUrl: campaign.booking_url || '',
-        waveColor: campaign.wave_color || '#3B82F6', // Cor padrão azul
-      }));
+      // Mapear dados do Supabase para o formato esperado e buscar categorias
+      const mappedCampaigns: Campaign[] = await Promise.all(
+        (data || []).map(async (campaign) => {
+          const categories = await fetchCampaignCategories(campaign.id);
+          
+          return {
+            id: campaign.id,
+            title: campaign.title,
+            description: campaign.description || 'Diária para dois adultos',
+            priceOriginal: campaign.price_original || 0,
+            pricePromotional: campaign.price_promotional || 0,
+            priceLabel: campaign.price_label || 'A partir de',
+            image: campaign.image_url || '/placeholder.svg',
+            startDate: campaign.start_date || '',
+            endDate: campaign.end_date || '',
+            duration: campaign.duration_nights ? `${campaign.duration_nights} diárias` : '2 diárias',
+            status: campaign.is_active ? 'active' : 'inactive',
+            category: campaign.category || '',
+            location: '',
+            maxGuests: 0,
+            bookingUrl: campaign.booking_url || '',
+            waveColor: campaign.wave_color || '#3B82F6',
+            categories: categories
+          };
+        })
+      );
 
       setCampaigns(mappedCampaigns);
     } catch (error) {
@@ -75,7 +107,7 @@ export const CampaignProvider: React.FC<CampaignProviderProps> = ({ children }) 
     fetchCampaigns();
   }, []);
 
-  const addCampaign = async (campaign: Omit<Campaign, 'id'>) => {
+  const addCampaign = async (campaign: Omit<Campaign, 'id'>): Promise<Campaign> => {
     try {
       // Calcular duration_nights a partir das datas
       let durationNights = 2; // valor padrão
@@ -106,15 +138,38 @@ export const CampaignProvider: React.FC<CampaignProviderProps> = ({ children }) 
           booking_url: campaign.bookingUrl,
           wave_color: campaign.waveColor || '#3B82F6'
         })
-        .select('*');
+        .select('*')
+        .single();
 
       if (error) {
         throw error;
       }
 
+      // Create the campaign object to return
+      const newCampaign: Campaign = {
+        id: data.id,
+        title: data.title,
+        description: data.description || 'Diária para dois adultos',
+        priceOriginal: data.price_original || 0,
+        pricePromotional: data.price_promotional || 0,
+        priceLabel: data.price_label || 'A partir de',
+        image: data.image_url || '/placeholder.svg',
+        startDate: data.start_date || '',
+        endDate: data.end_date || '',
+        duration: data.duration_nights ? `${data.duration_nights} diárias` : '2 diárias',
+        status: data.is_active ? 'active' : 'inactive',
+        category: data.category || '',
+        location: '',
+        maxGuests: 0,
+        bookingUrl: data.booking_url || '',
+        waveColor: data.wave_color || '#3B82F6',
+        categories: campaign.categories || []
+      };
+
       // Recarrega as campanhas imediatamente após a inserção
       await fetchCampaigns();
       
+      return newCampaign;
     } catch (error) {
       console.error('Erro ao adicionar campanha:', error);
       throw error;

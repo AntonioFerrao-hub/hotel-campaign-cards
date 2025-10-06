@@ -13,7 +13,11 @@ export const Gallery: React.FC = () => {
   const [searchTerm, setSearchTerm] = useState('');
   const [selectedCategory, setSelectedCategory] = useState<string>('');
 
-  const categories = Array.from(new Set(campaigns.map(c => c.category).filter(Boolean)));
+  // Get all unique categories from both single category field and categories array
+  const categories = Array.from(new Set([
+    ...campaigns.map(c => c.category).filter(Boolean),
+    ...campaigns.flatMap(c => c.categories?.map(cat => cat.name) || [])
+  ]));
 
   // Sincronizar com parâmetros de URL
   useEffect(() => {
@@ -55,7 +59,12 @@ export const Gallery: React.FC = () => {
   const filteredCampaigns = campaigns.filter(campaign => {
     const matchesSearch = campaign.title.toLowerCase().includes(searchTerm.toLowerCase()) || 
                          campaign.description.toLowerCase().includes(searchTerm.toLowerCase());
-    const matchesCategory = selectedCategory === '' || campaign.category === selectedCategory;
+    
+    // Check if campaign matches selected category (either in single category or categories array)
+    const matchesCategory = selectedCategory === '' || 
+                           campaign.category === selectedCategory ||
+                           (campaign.categories && campaign.categories.some(cat => cat.name === selectedCategory));
+    
     return matchesSearch && matchesCategory;
   });
 
@@ -92,6 +101,10 @@ export const Gallery: React.FC = () => {
 
         {/* Results Count */}
         <div className="mb-6">
+          <p className="text-sm text-gray-600">
+            {filteredCampaigns.length} {filteredCampaigns.length === 1 ? 'campanha encontrada' : 'campanhas encontradas'}
+            {selectedCategory && ` na categoria "${selectedCategory}"`}
+          </p>
         </div>
 
         {/* Campaigns Grid */}
@@ -106,10 +119,17 @@ export const Gallery: React.FC = () => {
         ) : (
           <div className="text-center py-12">
             <div className="h-24 w-24 mx-auto mb-4 rounded-full bg-gray-100 flex items-center justify-center">
+              <Hotel className="h-12 w-12 text-gray-400" />
             </div>
             <h3 className="text-lg font-semibold text-gray-900 mb-2">
               Nenhuma campanha encontrada
             </h3>
+            <p className="text-gray-600">
+              {selectedCategory 
+                ? `Não há campanhas na categoria "${selectedCategory}"`
+                : 'Tente ajustar os filtros de busca'
+              }
+            </p>
           </div>
         )}
       </section>
