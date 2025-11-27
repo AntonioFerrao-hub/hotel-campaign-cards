@@ -262,21 +262,22 @@ export const CampaignForm: React.FC<CampaignFormProps> = ({
     const file = e.target.files?.[0];
     if (!file) return;
 
-    // Validate file type
-    if (!file.type.startsWith('image/')) {
+    const isImage = file.type.startsWith('image/');
+    const isVideo = file.type.startsWith('video/');
+    if (!isImage && !isVideo) {
       toast({
         title: "Erro",
-        description: "Por favor, selecione apenas arquivos de imagem.",
+        description: "Selecione arquivos de imagem ou vídeo.",
         variant: "destructive"
       });
       return;
     }
 
-    // Validate file size (max 1MB)
-    if (file.size > 1 * 1024 * 1024) {
+    const maxSize = isVideo ? 50 * 1024 * 1024 : 1 * 1024 * 1024;
+    if (file.size > maxSize) {
       toast({
         title: "Erro",
-        description: "A imagem deve ter no máximo 1MB.",
+        description: isVideo ? "O vídeo deve ter no máximo 50MB." : "A imagem deve ter no máximo 1MB.",
         variant: "destructive"
       });
       return;
@@ -301,13 +302,13 @@ export const CampaignForm: React.FC<CampaignFormProps> = ({
       
       toast({
         title: "Sucesso",
-        description: "Imagem enviada com sucesso!"
+        description: isVideo ? "Vídeo enviado com sucesso!" : "Imagem enviada com sucesso!"
       });
     } catch (error) {
-      console.error('Error uploading image:', error);
+      console.error('Error uploading file:', error);
       toast({
         title: "Erro",
-        description: "Erro ao enviar a imagem. Tente novamente.",
+        description: "Erro ao enviar o arquivo. Tente novamente.",
         variant: "destructive"
       });
     } finally {
@@ -508,7 +509,7 @@ export const CampaignForm: React.FC<CampaignFormProps> = ({
                   <div className="flex gap-2">
                     <input
                       type="file"
-                      accept="image/*"
+                      accept="image/*,video/*"
                       onChange={handleImageUpload}
                       className="hidden"
                       id="image-upload"
@@ -518,11 +519,11 @@ export const CampaignForm: React.FC<CampaignFormProps> = ({
                       className="inline-flex items-center gap-2 px-4 py-2 border border-input bg-background hover:bg-accent hover:text-accent-foreground rounded-md cursor-pointer text-sm font-medium transition-colors"
                     >
                       <Upload className="h-4 w-4" />
-                      {isUploading ? 'Enviando...' : 'Upload Nova Imagem'}
+                      {isUploading ? 'Enviando...' : 'Upload Nova Mídia'}
                     </label>
                   </div>
                   <p className="text-xs text-muted-foreground">
-                    Tamanho máximo: 1MB. Formatos aceitos: JPG, PNG, GIF, WebP
+                    Imagens até 1MB (JPG, PNG, GIF, WebP). Vídeos até 50MB (MP4, WebM, OGG, MOV)
                   </p>
 
                   {/* Imagens predefinidas */}
@@ -556,9 +557,13 @@ export const CampaignForm: React.FC<CampaignFormProps> = ({
 
                 {/* Preview da imagem selecionada */}
                 <div className="space-y-2">
-                  <Label>Preview da Imagem</Label>
+                  <Label>Preview da Mídia</Label>
                   <div className="w-full h-48 rounded-lg overflow-hidden border">
-                    <img src={formData.image} alt="Preview" className="w-full h-full object-cover" />
+                    {/(\.mp4|\.webm|\.ogg|\.mov)(\?.*)?$/i.test(formData.image) ? (
+                      <video src={formData.image} controls className="w-full h-full object-cover" />
+                    ) : (
+                      <img src={formData.image} alt="Preview" className="w-full h-full object-cover" />
+                    )}
                   </div>
                 </div>
               </div>

@@ -10,6 +10,7 @@ interface CampaignContextType {
   getCampaign: (id: string) => Campaign | undefined;
   loading: boolean;
   refetch: () => Promise<void>;
+  autoDeactivateExpired: () => Promise<void>;
 }
 
 const CampaignContext = createContext<CampaignContextType | undefined>(undefined);
@@ -105,6 +106,23 @@ export const CampaignProvider: React.FC<CampaignProviderProps> = ({ children }) 
 
   useEffect(() => {
     fetchCampaigns();
+  }, []);
+
+  useEffect(() => {
+    const channel = supabase
+      .channel('campaigns-realtime')
+      .on('postgres_changes', { event: '*', schema: 'public', table: 'campaigns' }, () => {
+        fetchCampaigns();
+      })
+      .subscribe();
+
+    return () => {
+      try {
+        supabase.removeChannel(channel);
+      } catch (e) {
+        console.error('Erro ao remover canal realtime:', e);
+      }
+    };
   }, []);
 
   const addCampaign = async (campaign: Omit<Campaign, 'id'>): Promise<Campaign> => {
@@ -223,6 +241,39 @@ export const CampaignProvider: React.FC<CampaignProviderProps> = ({ children }) 
     }
   };
 
+  const autoDeactivateExpired = async () => {
+    try {
+      const todayStr = new Date().toISOString().slice(0, 10);
+      const { data: expired, error } = await supabase
+        .from('campaigns')
+        .select('id')
+        .eq('is_active', true)
+        .lt('end_date', todayStr);
+
+      if (error) {
+        console.error('Erro ao identificar campanhas expiradas:', error);
+        return;
+      }
+
+      const ids = (expired || []).map((c: any) => c.id);
+      if (ids.length === 0) return;
+
+      const { error: updateError } = await supabase
+        .from('campaigns')
+        .update({ is_active: false })
+        .in('id', ids);
+
+      if (updateError) {
+        console.error('Erro ao desativar campanhas expiradas:', updateError);
+        return;
+      }
+
+      await fetchCampaigns();
+    } catch (err) {
+      console.error('Erro inesperado na rotina de desativação automática:', err);
+    }
+  };
+
   const deleteCampaign = (id: string) => {
     setCampaigns(prev => prev.filter(campaign => campaign.id !== id));
   };
@@ -239,7 +290,8 @@ export const CampaignProvider: React.FC<CampaignProviderProps> = ({ children }) 
       deleteCampaign,
       getCampaign,
       loading,
-      refetch: fetchCampaigns
+      refetch: fetchCampaigns,
+      autoDeactivateExpired
     }}>
       {children}
     </CampaignContext.Provider>
