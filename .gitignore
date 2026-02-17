@@ -1,24 +1,22 @@
-# Logs
-logs
+# Arquivos de log
 *.log
-npm-debug.log*
-yarn-debug.log*
-yarn-error.log*
-pnpm-debug.log*
-lerna-debug.log*
+*.txt
 
+# Arquivos de dump do banco de dados
+*.dump
+*.list
+
+# Arquivos de ambiente
+.env
+
+# Scripts temporários (se não quiser versioná-los)
+# temp_db_test.ps1
+# compare_databases.ps1
+# test-network-connectivity.ps1
+
+# Node modules
 node_modules
-dist
-dist-ssr
-*.local
 
-# Editor directories and files
-.vscode/*
-!.vscode/extensions.json
-.idea
-.DS_Store
-*.suo
-*.ntvs*
-*.njsproj
-*.sln
-*.sw?
+# Vite
+.vite/
+dist/
