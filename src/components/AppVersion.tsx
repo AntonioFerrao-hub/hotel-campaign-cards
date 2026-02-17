@@ -8,7 +8,7 @@ interface AppVersionProps {
 
 export const AppVersion: React.FC<AppVersionProps> = ({ className = '' }) => {
   // Versão baseada na tag do GitHub - será atualizada automaticamente no build
-  const version = import.meta.env.VITE_APP_VERSION || 'v0.2.6';
+  const version = import.meta.env.VITE_APP_VERSION || 'v0.2.9';
   
   return (
     <div className={`flex items-center gap-2 ${className}`}>

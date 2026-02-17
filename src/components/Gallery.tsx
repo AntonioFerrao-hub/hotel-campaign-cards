@@ -7,6 +7,7 @@ import { Badge } from '@/components/ui/badge';
 import { Search, Filter, Hotel } from 'lucide-react';
 import { CampaignCard } from '@/components/CampaignCard';
 import { supabase } from '@/integrations/supabase/client';
+import type { Campaign } from '@/types/campaign';
 
 interface Category {
   id: string;
@@ -15,11 +16,12 @@ interface Category {
 }
 
 export const Gallery: React.FC = () => {
-  const { campaigns } = useCampaigns();
+  const { campaigns, autoDeactivateExpired } = useCampaigns();
   const [searchParams, setSearchParams] = useSearchParams();
   const [searchTerm, setSearchTerm] = useState('');
   const [selectedCategory, setSelectedCategory] = useState<string>('');
   const [orderedCategories, setOrderedCategories] = useState<Category[]>([]);
+  
 
   // Fetch categories with custom ordering
   const fetchOrderedCategories = async () => {
@@ -44,6 +46,21 @@ export const Gallery: React.FC = () => {
     fetchOrderedCategories();
   }, []);
 
+  useEffect(() => {
+    // Desativar automaticamente campanhas expiradas ao entrar na página
+    (async () => {
+      try {
+        await autoDeactivateExpired();
+      } catch (e) {
+        console.error('Erro ao desativar campanhas expiradas automaticamente:', e);
+      }
+    })();
+    const savedCategory = localStorage.getItem('gallery_category') || '';
+    const savedSearch = localStorage.getItem('gallery_search') || '';
+    setSelectedCategory(savedCategory);
+    setSearchTerm(savedSearch);
+  }, []);
+
   // Get all unique categories from campaigns that exist in our ordered categories
   const availableCategories = orderedCategories.filter(category => 
     campaigns.some(campaign => 
@@ -59,9 +76,11 @@ export const Gallery: React.FC = () => {
     
     if (categoryParam) {
       setSelectedCategory(categoryParam);
+      localStorage.setItem('gallery_category', categoryParam);
     }
     if (searchParam) {
       setSearchTerm(searchParam);
+      localStorage.setItem('gallery_search', searchParam);
     }
   }, [searchParams]);
 
@@ -81,15 +100,17 @@ export const Gallery: React.FC = () => {
 
   const handleCategoryChange = (category: string) => {
     setSelectedCategory(category);
+    localStorage.setItem('gallery_category', category);
     updateURLParams(category, searchTerm);
   };
 
   const handleSearchChange = (search: string) => {
     setSearchTerm(search);
+    localStorage.setItem('gallery_search', search);
     updateURLParams(selectedCategory, search);
   };
 
-  const filteredCampaigns = campaigns.filter(campaign => {
+  const filteredCampaigns: Campaign[] = campaigns.filter((campaign: Campaign) => {
     const matchesSearch = campaign.title.toLowerCase().includes(searchTerm.toLowerCase()) || 
                          campaign.description.toLowerCase().includes(searchTerm.toLowerCase());
     
@@ -97,8 +118,14 @@ export const Gallery: React.FC = () => {
     const matchesCategory = selectedCategory === '' || 
                            campaign.category === selectedCategory ||
                            (campaign.categories && campaign.categories.some(cat => cat.name === selectedCategory));
-    
-    return matchesSearch && matchesCategory;
+    const isActive = campaign.status === 'active';
+    return matchesSearch && matchesCategory && isActive;
+  });
+
+  const sortedCampaigns: Campaign[] = filteredCampaigns.slice().sort((a, b) => {
+    const aStart = a.startDate ? new Date(a.startDate).getTime() : 0;
+    const bStart = b.startDate ? new Date(b.startDate).getTime() : 0;
+    return bStart - aStart; // mais recentes primeiro
   });
 
   return (
@@ -107,10 +134,8 @@ export const Gallery: React.FC = () => {
       <header className="border-b border-gray-200 bg-white shadow-sm">
       </header>
 
-      {/* Search and Filters */}
       <section className="container mx-auto px-4 py-8">
-        <div className="flex flex-col sm:flex-row gap-4 mb-8">
-          {/* Category Filters */}
+        <div className="flex flex-col gap-4 mb-8">
           <div className="flex flex-wrap gap-2 items-center">
             <Badge 
               variant={selectedCategory === '' ? 'default' : 'outline'} 
@@ -144,7 +169,7 @@ export const Gallery: React.FC = () => {
         {filteredCampaigns.length > 0 ? (
           <div className="w-full">
             <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-5 justify-items-center px-4">
-              {filteredCampaigns.map(campaign => (
+              {sortedCampaigns.map(campaign => (
                 <CampaignCard key={campaign.id} campaign={campaign} showActions={false} />
               ))}
             </div>

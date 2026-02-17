@@ -36,11 +36,17 @@ export const CampaignCard: React.FC<CampaignCardProps> = ({
   const navigate = useNavigate();
 
   const handleReserve = () => {
+    if (campaign.status === 'inactive') {
+      toast({
+        title: "Campanha inativa",
+        description: "Esta campanha não está disponível para reserva.",
+        variant: "destructive",
+      });
+      return;
+    }
     if (campaign.bookingUrl) {
-      // Redirecionar para o link de reserva da campanha
       window.open(campaign.bookingUrl, '_blank');
     } else {
-      // Mostrar toast se não houver link configurado
       toast({
         title: "Link não configurado",
         description: "Esta campanha ainda não possui um link de reserva configurado.",
@@ -128,13 +134,25 @@ export const CampaignCard: React.FC<CampaignCardProps> = ({
       className="w-[360px] bg-white shadow-[0_4px_18px_rgba(0,0,0,0.08)] border-0 rounded-[12px] overflow-hidden group hover:scale-[1.02] hover:shadow-[0_6px_24px_rgba(0,0,0,0.12)] transition-[var(--transition-smooth)] flex flex-col flex-shrink-0 cursor-pointer relative"
       onClick={handleReserve}
     >
-      {/* Imagem ajustada para 210px conforme modelo */}
       <div className="relative h-[210px] overflow-hidden">
-        <img 
-          src={campaign.image} 
-          alt={campaign.title}
-          className="w-full h-full object-cover block group-hover:scale-105 transition-transform duration-300"
-        />
+        {campaign.status === 'inactive' && (
+          <div className="absolute top-2 left-2 z-10">
+            <Badge variant="outline" className="bg-gray-100 text-gray-700 border-gray-300">Inativa</Badge>
+          </div>
+        )}
+        {/(\.mp4|\.webm|\.ogg|\.mov)(\?.*)?$/i.test(campaign.image) ? (
+          <video 
+            src={campaign.image}
+            className="w-full h-full object-cover block"
+            controls
+          />
+        ) : (
+          <img 
+            src={campaign.image} 
+            alt={campaign.title}
+            className="w-full h-full object-cover block group-hover:scale-105 transition-transform duration-300"
+          />
+        )}
         
         {showActions && (
           <div className="absolute top-2 right-2 flex gap-1 opacity-0 group-hover:opacity-100 transition-opacity">

@@ -1,0 +1,2 @@
+. "c:\Users\Administrador\Documents\lovable_galaeria_hotel\hotel-campaign-cards\migrate-supabase.ps1"
+Test-DbConnection -ConnectionUri 'postgresql://postgres.mpdblvvznqpajascuxxb:Acesso%402025AAA@aws-0-sa-east-1.pooler.supabase.com:6543/postgres' -ConnectionName 'Origem'
